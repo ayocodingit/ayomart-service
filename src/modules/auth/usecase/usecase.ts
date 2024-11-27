@@ -60,6 +60,7 @@ class Usecase {
         const access_token = this.jwt.Sign({
             id: user.id,
             email: user.email,
+            role: user.role,
         })
 
         return access_token
