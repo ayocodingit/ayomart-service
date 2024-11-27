@@ -1,21 +1,35 @@
 import { DataTypes } from 'sequelize'
 import { Connection } from '../interface'
 
-const Post = (connection: Connection) => {
+const Store = (connection: Connection) => {
     return connection.define(
-        'posts',
+        'stores',
         {
             id: {
                 primaryKey: true,
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
             },
-            title: {
+            name: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            description: {
+            address: {
                 type: DataTypes.STRING,
+                allowNull: false,
+            },
+            is_active: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true,
+            },
+            logo: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            created_by: {
+                type: DataTypes.STRING,
+                allowNull: false,
             },
         },
         {
@@ -26,4 +40,4 @@ const Post = (connection: Connection) => {
     )
 }
 
-export default Post
+export default Store

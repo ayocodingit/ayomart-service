@@ -3,7 +3,8 @@ import { ModelStatic, Sequelize, Op } from 'sequelize'
 export type Model = ModelStatic<any>
 
 export type Schema = {
-    post: Model
+    store: Model
+    user: Model
     // Add other models if needed
     // ...
 

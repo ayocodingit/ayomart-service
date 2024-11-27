@@ -1,8 +1,9 @@
 import { Config } from '../../config/config.interface'
 import Logger from '../../pkg/logger'
 import { Sequelize as createConnection, Dialect, Op } from 'sequelize'
-import Post from './models/post'
 import { Connection } from './interface'
+import User from './models/user'
+import Store from './models/store'
 
 class Sequalize {
     public static async Connect({ db }: Config, logger: Logger) {
@@ -35,12 +36,14 @@ class Sequalize {
 
     public static Models = (connection: Connection) => {
         // load all model on folder models
-        const post = Post(connection)
+        const user = User(connection)
+        const store = Store(connection)
 
         // setup relation for eager loader in here
         // example: User.hasOne(Profile)
         return {
-            post,
+            user,
+            store,
             // Add other models if needed
             // ...
 
