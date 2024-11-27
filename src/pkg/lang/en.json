@@ -1,0 +1,6 @@
+{
+    "exists": "The {{attribute}} is already exists.",
+    "message": "message.",
+    "not_valid": "The {{attribute}} is not valid.",
+    "not_exists": "The {{attribute}} is not exists."
+}
