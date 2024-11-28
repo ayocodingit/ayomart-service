@@ -16,22 +16,16 @@ class Minio {
     }
 
     public async Upload(
-        filename: string,
+        path: string,
         source: Buffer,
         size: number,
         mimetype: string
     ) {
         try {
-            await this.client.putObject(
-                this.minio.bucket,
-                filename,
-                source,
-                size,
-                {
-                    'Content-Type': mimetype,
-                }
-            )
-            return this.config.file.uri + '/' + filename
+            await this.client.putObject(this.minio.bucket, path, source, size, {
+                'Content-Type': mimetype,
+            })
+            return this.config.file.uri + path
         } catch (error) {
             throw error
         }

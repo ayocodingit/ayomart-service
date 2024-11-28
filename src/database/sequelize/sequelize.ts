@@ -41,6 +41,10 @@ class Sequalize {
         const store = Store(connection)
         const product = Product(connection)
 
+        user.hasOne(store, {
+            foreignKey: 'created_by',
+        })
+
         // setup relation for eager loader in here
         // example: User.hasOne(Profile)
         return {

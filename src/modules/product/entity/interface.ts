@@ -18,5 +18,6 @@ export type Store = {
     discount: number
     description: string
     created_by: string
+    store_id: string
     images: File[]
 }

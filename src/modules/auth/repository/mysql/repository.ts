@@ -28,6 +28,7 @@ class Repository {
             where: {
                 email,
             },
+            include: this.schema.store,
         })
     }
 }

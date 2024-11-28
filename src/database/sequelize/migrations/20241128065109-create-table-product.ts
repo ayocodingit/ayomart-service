@@ -62,6 +62,10 @@ module.exports = {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
+                store_id: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
                 is_active: {
                     type: DataTypes.BOOLEAN,
                     allowNull: false,
@@ -81,7 +85,12 @@ module.exports = {
                     'code',
                     'name',
                     'category',
-                ])
+                ]).then(() => {
+                    return queryInterface.addIndex('products', [
+                        'store_id',
+                        'created_by'
+                    ])
+                })
             })
     },
 

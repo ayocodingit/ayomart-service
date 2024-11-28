@@ -50,6 +50,8 @@ class Usecase {
             throw new error(statusCode.UNAUTHORIZED, 'login gagal')
         }
 
+        console.log(user)
+
         if (
             !(await isMatchPassword(body.password, user.password)) ||
             user.status !== status.VERIFY
@@ -57,11 +59,20 @@ class Usecase {
             throw new error(statusCode.UNAUTHORIZED, 'login gagal')
         }
 
-        const access_token = this.jwt.Sign({
-            id: user.id,
-            email: user.email,
-            role: user.role,
-        })
+        const access_token = this.jwt.Sign(
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+                store: {
+                    id: user.store.id,
+                    name: user.store.name,
+                },
+            },
+            {
+                expiresIn: '4h',
+            }
+        )
 
         return access_token
     }

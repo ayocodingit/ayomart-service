@@ -1,13 +1,13 @@
-import { extname } from 'path'
 import { Translate } from '../../../helpers/translate'
 import error from '../../../pkg/error'
-import Jwt from '../../../pkg/jwt'
 import Logger from '../../../pkg/logger'
 import Minio from '../../../pkg/minio'
 import statusCode from '../../../pkg/statusCode'
 import { File, Store } from '../entity/interface'
 import Repository from '../repository/mysql/repository'
 import { readFileSync } from 'fs'
+import Sharp from '../../../pkg/sharp'
+import { RequestParams } from '../../../helpers/requestParams'
 
 class Usecase {
     constructor(
@@ -16,12 +16,18 @@ class Usecase {
         private minio: Minio
     ) {}
 
-    private async Upload(images: File[]) {
+    private async upload(images: File[], created_by: string) {
         for (const image of images) {
-            const ext = extname(image.originalname)
-            const source = readFileSync(image.path)
+            const { meta, source } = await Sharp.Convert(
+                readFileSync(image.path),
+                image.filename,
+                'jpeg',
+                80
+            )
+            Object.assign(image, meta)
+            image.path = `/${created_by}/product/${image.filename}`
             const uri = await this.minio.Upload(
-                image.filename + ext,
+                image.path,
                 source,
                 image.size,
                 image.mimetype
@@ -33,11 +39,11 @@ class Usecase {
     }
 
     public async Store(body: Store) {
-        body.images = await this.Upload(body.images)
+        body.images = await this.upload(body.images, body.store_id)
 
         const product = await this.repository.GetByName(
             body.name,
-            body.created_by
+            body.store_id
         )
         if (product)
             throw new error(
@@ -51,6 +57,11 @@ class Usecase {
             )
 
         return this.repository.Store(body)
+    }
+
+    public async Fetch(request: RequestParams<{}>, store_id: string) {
+        const result = await this.repository.Fetch(request, store_id)
+        return result
     }
 }
 

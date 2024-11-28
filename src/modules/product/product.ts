@@ -37,6 +37,7 @@ class Product {
         const auth = VerifyAuth(jwt)
 
         Router.post('/', http.Upload('files'), handler.Store as RequestHandler)
+        Router.get('/', handler.Fetch as RequestHandler)
 
         http.SetRouter('/v1/products/', auth, Router)
     }
