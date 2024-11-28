@@ -5,6 +5,7 @@ export type Model = ModelStatic<any>
 export type Schema = {
     store: Model
     user: Model
+    product: Model
     // Add other models if needed
     // ...
 

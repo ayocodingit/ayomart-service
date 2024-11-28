@@ -8,6 +8,7 @@ export const StoreSchema = Joi.object<Store>({
     password: Joi.string().min(6).required(),
     name: Joi.string().required(),
     address: Joi.string().required(),
+    phone_number: Joi.string().required(),
 })
 
 export const LoginSchema = Joi.object<Login>({

@@ -4,6 +4,7 @@ import { Sequelize as createConnection, Dialect, Op } from 'sequelize'
 import { Connection } from './interface'
 import User from './models/user'
 import Store from './models/store'
+import Product from './models/product'
 
 class Sequalize {
     public static async Connect({ db }: Config, logger: Logger) {
@@ -38,12 +39,14 @@ class Sequalize {
         // load all model on folder models
         const user = User(connection)
         const store = Store(connection)
+        const product = Product(connection)
 
         // setup relation for eager loader in here
         // example: User.hasOne(Profile)
         return {
             user,
             store,
+            product,
             // Add other models if needed
             // ...
 
