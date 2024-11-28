@@ -16,7 +16,7 @@ class Usecase {
         private minio: Minio
     ) {}
 
-    private async upload(images: File[], created_by: string) {
+    private async upload(images: File[], store_id: string) {
         for (const image of images) {
             const { meta, source } = await Sharp.Convert(
                 readFileSync(image.path),
@@ -25,7 +25,7 @@ class Usecase {
                 80
             )
             Object.assign(image, meta)
-            image.path = `/${created_by}/product/${image.filename}`
+            image.path = `/${store_id}/product/${image.filename}`
             const uri = await this.minio.Upload(
                 image.path,
                 source,
