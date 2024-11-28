@@ -137,7 +137,7 @@ class Http {
                 fileSize: this.config.file.max,
             },
         })
-        return upload.array(fieldName, 2)
+        return upload.array(fieldName, 5)
     }
 
     public RateLimiter(
