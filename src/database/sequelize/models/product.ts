@@ -9,6 +9,7 @@ const Product = (connection: Connection) => {
                 primaryKey: true,
                 type: DataTypes.UUID,
                 allowNull: false,
+                defaultValue: DataTypes.UUIDV4,
             },
             code: {
                 type: DataTypes.STRING,

@@ -19,6 +19,7 @@ const config: Config = {
     file: {
         max: Number(env.FILE_MAX) * 1024 * 1024, // MB
         uri: env.FILE_URI,
+        type: env.FILE_TYPE,
     },
     db: {
         connection: env.DB_CONNECTION,
@@ -39,6 +40,13 @@ const config: Config = {
     jwt: {
         access_key: env.JWT_ACCESS_SECRET,
         algorithm: env.JWT_ALGORITHM,
+    },
+    minio: {
+        access_key: env.MINIO_ACCESS_KEY,
+        secret_key: env.MINIO_SECRET_KEY,
+        endpoint: env.MINIO_ENDPOINT,
+        port: env.MINIO_PORT,
+        bucket: env.MINIO_BUCKET,
     },
 }
 

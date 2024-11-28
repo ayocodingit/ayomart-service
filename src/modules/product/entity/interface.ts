@@ -1,3 +1,12 @@
+export type File = {
+    path: string
+    size: number
+    mimetype: string
+    originalname: string
+    filename: string
+    uri: string
+}
+
 export type Store = {
     code: string
     name: string
@@ -8,5 +17,6 @@ export type Store = {
     stock: number
     discount: number
     description: string
-    images: string[]
+    created_by: string
+    images: File[]
 }

@@ -9,6 +9,7 @@ import Sequelize from '../../database/sequelize/sequelize'
 import { RequestHandler } from 'express'
 import Jwt from '../../pkg/jwt'
 import { VerifyAuth } from '../../transport/http/middleware/verifyAuth'
+import Minio from '../../pkg/minio'
 
 class Product {
     public usecase: Usecase
@@ -20,7 +21,8 @@ class Product {
     ) {
         const schema = Sequelize.Models(connection)
         const repository = new Repository(logger, schema)
-        this.usecase = new Usecase(logger, repository)
+        const minio = new Minio(config)
+        this.usecase = new Usecase(logger, repository, minio)
     }
 
     public RunHttp(http: Http) {
@@ -34,7 +36,7 @@ class Product {
         const jwt = new Jwt(this.config.jwt.access_key)
         const auth = VerifyAuth(jwt)
 
-        Router.post('/', handler.Store as RequestHandler)
+        Router.post('/', http.Upload('files'), handler.Store as RequestHandler)
 
         http.SetRouter('/v1/products/', auth, Router)
     }

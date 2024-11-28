@@ -11,6 +11,7 @@ export type Config = {
     file: {
         max: number
         uri: string
+        type: string[]
     }
     db: {
         connection: string
@@ -31,5 +32,12 @@ export type Config = {
     jwt: {
         access_key: string
         algorithm: string
+    }
+    minio: {
+        endpoint: string
+        access_key: string
+        secret_key: string
+        bucket: string
+        port: number
     }
 }

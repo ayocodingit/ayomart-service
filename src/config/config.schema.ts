@@ -13,6 +13,12 @@ export default Joi.object({
 
     FILE_MAX: Joi.number().optional().default(10), // MB
     FILE_URI: Joi.string().uri().optional(),
+    FILE_TYPE: Joi.array().default([
+        'image/jpeg',
+        'image/png',
+        'image/svg',
+        'image/web',
+    ]),
 
     DB_CONNECTION: Joi.string()
         .valid('mysql', 'postgres')
@@ -31,4 +37,10 @@ export default Joi.object({
 
     JWT_ACCESS_SECRET: Joi.string().optional(),
     JWT_ALGORITHM: Joi.string().default('HS256').optional(),
+
+    MINIO_ENDPOINT: Joi.string().optional(),
+    MINIO_ACCESS_KEY: Joi.string().optional(),
+    MINIO_SECRET_KEY: Joi.string().optional(),
+    MINIO_BUCKET: Joi.string().optional(),
+    MINIO_PORT: Joi.number().optional().default(9001),
 })
