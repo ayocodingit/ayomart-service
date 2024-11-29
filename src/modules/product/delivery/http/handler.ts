@@ -61,6 +61,22 @@ class Handler {
             return next(error)
         }
     }
+
+    public Show = async (req: any, res: Response, next: NextFunction) => {
+        try {
+            const data = await this.usecase.Show(
+                req.params.id
+            )
+            this.logger.Info(statusCode[statusCode.OK], {
+                additional_info: this.http.AdditionalInfo(req, statusCode.OK),
+            })
+
+            return res.json({ data })
+        } catch (error) {
+            return next(error)
+        }
+    }
+
 }
 
 export default Handler

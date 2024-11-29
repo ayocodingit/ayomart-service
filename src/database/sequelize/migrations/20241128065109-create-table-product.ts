@@ -63,7 +63,7 @@ module.exports = {
                     allowNull: false,
                 },
                 store_id: {
-                    type: DataTypes.STRING,
+                    type: DataTypes.UUID,
                     allowNull: false,
                 },
                 is_active: {

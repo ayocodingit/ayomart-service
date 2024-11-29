@@ -37,5 +37,5 @@ export default Joi.object({
     MINIO_ACCESS_KEY: Joi.string().optional(),
     MINIO_SECRET_KEY: Joi.string().optional(),
     MINIO_BUCKET: Joi.string().optional(),
-    MINIO_PORT: Joi.number().optional().default(9001),
+    MINIO_PORT: Joi.number().optional().default(9000),
 })

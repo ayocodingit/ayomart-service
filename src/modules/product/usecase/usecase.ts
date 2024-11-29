@@ -63,6 +63,16 @@ class Usecase {
         const result = await this.repository.Fetch(request, store_id)
         return result
     }
+
+    public async Show(id: string) {
+        const result = await this.repository.GetByID(id)
+
+        if (!result) {
+            throw new error(statusCode.NOT_FOUND, statusCode[statusCode.NOT_FOUND])
+        }
+
+        return result
+    }
 }
 
 export default Usecase

@@ -28,11 +28,11 @@ const Store = (connection: Connection) => {
                 defaultValue: true,
             },
             logo: {
-                type: DataTypes.STRING,
+                type: DataTypes.JSON,
                 allowNull: true,
             },
             created_by: {
-                type: DataTypes.STRING,
+                type: DataTypes.UUID,
                 allowNull: false,
             },
         },

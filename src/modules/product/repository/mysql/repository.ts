@@ -19,6 +19,10 @@ class Repository {
         })
     }
 
+    public async GetByID(id: string) {
+        return this.schema.product.findByPk(id)
+    }
+
     public async Fetch(request: RequestParams<{}>, store_id: string) {
         const where = { store_id }
 

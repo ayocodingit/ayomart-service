@@ -3,7 +3,6 @@
 import { DataTypes, QueryInterface } from 'sequelize'
 import { role, status } from '../../constant/user'
 import sequelize from 'sequelize'
-import { UUIDV4 } from 'sequelize'
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
