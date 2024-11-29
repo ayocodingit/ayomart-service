@@ -1,9 +1,10 @@
 import { DataTypes } from 'sequelize'
 import { Connection } from '../interface'
+import { order_type, payment_method, status } from '../../constant/order'
 
-const Product = (connection: Connection) => {
+const Order = (connection: Connection) => {
     return connection.define(
-        'products',
+        'orders',
         {
             id: {
                 primaryKey: true,
@@ -15,46 +16,57 @@ const Product = (connection: Connection) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            unit: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            category: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            price: {
+            change_money: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                defaultValue: 0,
-            },
-            grosir_price: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                defaultValue: 0,
-            },
-            stock: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                defaultValue: 0,
             },
             discount: {
                 type: DataTypes.FLOAT,
                 allowNull: false,
-                defaultValue: 0,
             },
-            description: {
-                type: DataTypes.TEXT,
+            total_order: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            total_price: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            queue: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            note: {
+                type: DataTypes.STRING,
                 allowNull: true,
             },
-            images: {
-                type: DataTypes.JSON,
+            pickup_time: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+            order_type: {
+                type: DataTypes.STRING,
                 allowNull: false,
-                defaultValue: JSON.stringify([]),
+                defaultValue: order_type.CASHIER,
+            },
+            payment_method: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                defaultValue: payment_method.CASH,
+            },
+            proof_of_payment: {
+                type: DataTypes.JSON,
+                allowNull: true,
+            },
+
+            customer_id: {
+                type: DataTypes.UUID,
+                allowNull: true,
+            },
+            status: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                defaultValue: status.RECEIVED,
             },
             created_by: {
                 type: DataTypes.UUID,
@@ -63,11 +75,6 @@ const Product = (connection: Connection) => {
             store_id: {
                 type: DataTypes.UUID,
                 allowNull: false,
-            },
-            is_active: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-                defaultValue: true,
             },
         },
         {
@@ -78,4 +85,4 @@ const Product = (connection: Connection) => {
     )
 }
 
-export default Product
+export default Order

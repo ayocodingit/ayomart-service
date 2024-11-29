@@ -6,6 +6,8 @@ export type Schema = {
     store: Model
     user: Model
     product: Model
+    order: Model
+    customer: Model
     // Add other models if needed
     // ...
 

@@ -5,6 +5,9 @@ import { Connection } from './interface'
 import User from './models/user'
 import Store from './models/store'
 import Product from './models/product'
+import Order from './models/order'
+import Customer from './models/customer'
+import ProductOrder from './models/productOrder'
 
 class Sequalize {
     public static async Connect({ db }: Config, logger: Logger) {
@@ -40,9 +43,23 @@ class Sequalize {
         const user = User(connection)
         const store = Store(connection)
         const product = Product(connection)
+        const order = Order(connection)
+        const customer = Customer(connection)
+        const productOrder = ProductOrder(connection)
 
         user.hasOne(store, {
             foreignKey: 'created_by',
+        })
+
+        product.belongsToMany(order, {
+            through: productOrder,
+            foreignKey: 'product_id',
+            otherKey: 'order_id',
+        })
+        order.belongsToMany(product, {
+            through: productOrder,
+            foreignKey: 'order_id',
+            otherKey: 'product_id',
         })
 
         // setup relation for eager loader in here
@@ -51,6 +68,8 @@ class Sequalize {
             user,
             store,
             product,
+            order,
+            customer,
             // Add other models if needed
             // ...
 

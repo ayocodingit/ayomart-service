@@ -2,12 +2,13 @@
 
 import sequelize from 'sequelize'
 import { DataTypes, QueryInterface } from 'sequelize'
+import { order_type, payment_method, status } from '../../constant/order'
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface: QueryInterface) {
         return queryInterface
-            .createTable('products', {
+            .createTable('orders', {
                 id: {
                     primaryKey: true,
                     type: DataTypes.UUID,
@@ -17,46 +18,57 @@ module.exports = {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
-                name: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                },
-                unit: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                },
-                category: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                },
-                price: {
+                change_money: {
                     type: DataTypes.INTEGER,
                     allowNull: false,
-                    defaultValue: 0,
-                },
-                grosir_price: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
-                    defaultValue: 0,
-                },
-                stock: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
-                    defaultValue: 0,
                 },
                 discount: {
                     type: DataTypes.FLOAT,
                     allowNull: false,
-                    defaultValue: 0,
                 },
-                description: {
-                    type: DataTypes.TEXT,
+                total_order: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                },
+                total_price: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                },
+                queue: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                },
+                note: {
+                    type: DataTypes.STRING,
                     allowNull: true,
                 },
-                images: {
-                    type: DataTypes.JSON,
+                pickup_time: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                },
+                order_type: {
+                    type: DataTypes.STRING,
                     allowNull: false,
-                    defaultValue: JSON.stringify([]),
+                    defaultValue: order_type.CASHIER,
+                },
+                payment_method: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                    defaultValue: payment_method.CASH,
+                },
+                proof_of_payment: {
+                    type: DataTypes.JSON,
+                    allowNull: true,
+                },
+
+                customer_id: {
+                    type: DataTypes.UUID,
+                    allowNull: true,
+                },
+                status: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                    defaultValue: status.RECEIVED,
                 },
                 created_by: {
                     type: DataTypes.UUID,
@@ -65,11 +77,6 @@ module.exports = {
                 store_id: {
                     type: DataTypes.UUID,
                     allowNull: false,
-                },
-                is_active: {
-                    type: DataTypes.BOOLEAN,
-                    allowNull: false,
-                    defaultValue: true,
                 },
                 created_at: {
                     type: DataTypes.DATE,
@@ -81,18 +88,15 @@ module.exports = {
                 },
             })
             .then(() => {
-                return queryInterface
-                    .addIndex('products', ['code', 'name', 'category'])
-                    .then(() => {
-                        return queryInterface.addIndex('products', [
-                            'store_id',
-                            'created_by',
-                        ])
-                    })
+                return queryInterface.addIndex('orders', [
+                    'code',
+                    'order_type',
+                    'status',
+                ])
             })
     },
 
     async down(queryInterface: QueryInterface) {
-        return queryInterface.dropTable('products')
+        return queryInterface.dropTable('orders')
     },
 }
