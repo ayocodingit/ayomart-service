@@ -81,16 +81,14 @@ module.exports = {
                 },
             })
             .then(() => {
-                return queryInterface.addIndex('products', [
-                    'code',
-                    'name',
-                    'category',
-                ]).then(() => {
-                    return queryInterface.addIndex('products', [
-                        'store_id',
-                        'created_by'
-                    ])
-                })
+                return queryInterface
+                    .addIndex('products', ['code', 'name', 'category'])
+                    .then(() => {
+                        return queryInterface.addIndex('products', [
+                            'store_id',
+                            'created_by',
+                        ])
+                    })
             })
     },
 

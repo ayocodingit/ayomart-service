@@ -6,7 +6,7 @@ import Jwt from '../../../pkg/jwt'
 import Logger from '../../../pkg/logger'
 import statusCode from '../../../pkg/statusCode'
 import { Login, Store } from '../entity/interface'
-import Repository from '../repository/mysql/repository'
+import Repository from '../repository/postgresql/repository'
 
 class Usecase {
     constructor(

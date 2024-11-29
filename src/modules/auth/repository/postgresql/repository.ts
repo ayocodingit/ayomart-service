@@ -2,7 +2,6 @@ import Logger from '../../../../pkg/logger'
 import { Store } from '../../entity/interface'
 import { Schema } from '../../../../database/sequelize/interface'
 import { Transaction } from 'sequelize'
-import { status } from '../../../../database/constant/user'
 
 class Repository {
     constructor(private logger: Logger, private schema: Schema) {}

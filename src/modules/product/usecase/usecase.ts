@@ -4,7 +4,7 @@ import Logger from '../../../pkg/logger'
 import Minio from '../../../pkg/minio'
 import statusCode from '../../../pkg/statusCode'
 import { File, Store } from '../entity/interface'
-import Repository from '../repository/mysql/repository'
+import Repository from '../repository/postgresql/repository'
 import { readFileSync } from 'fs'
 import Sharp from '../../../pkg/sharp'
 import { RequestParams } from '../../../helpers/requestParams'
@@ -68,7 +68,10 @@ class Usecase {
         const result = await this.repository.GetByID(id)
 
         if (!result) {
-            throw new error(statusCode.NOT_FOUND, statusCode[statusCode.NOT_FOUND])
+            throw new error(
+                statusCode.NOT_FOUND,
+                statusCode[statusCode.NOT_FOUND]
+            )
         }
 
         return result
