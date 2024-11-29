@@ -8,6 +8,7 @@ export type Schema = {
     product: Model
     order: Model
     customer: Model
+    productOrder: Model
     // Add other models if needed
     // ...
 

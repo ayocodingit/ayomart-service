@@ -15,8 +15,8 @@ const ProductOrder = (connection: Connection) => {
                 type: DataTypes.UUID,
                 allowNull: false,
             },
-            product_id: {
-                type: DataTypes.UUID,
+            product_name: {
+                type: DataTypes.STRING,
                 allowNull: false,
             },
             qty: {
@@ -24,10 +24,6 @@ const ProductOrder = (connection: Connection) => {
                 allowNull: false,
             },
             price: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            total: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },

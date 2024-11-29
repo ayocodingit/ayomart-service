@@ -17,8 +17,8 @@ module.exports = {
                     type: DataTypes.UUID,
                     allowNull: false,
                 },
-                product_id: {
-                    type: DataTypes.UUID,
+                product_name: {
+                    type: DataTypes.STRING,
                     allowNull: false,
                 },
                 qty: {
@@ -26,10 +26,6 @@ module.exports = {
                     allowNull: false,
                 },
                 price: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
-                },
-                total: {
                     type: DataTypes.INTEGER,
                     allowNull: false,
                 },
@@ -49,7 +45,7 @@ module.exports = {
             .then(() => {
                 return queryInterface.addIndex('product_order', [
                     'order_id',
-                    'product_id',
+                    'product_name',
                 ])
             })
     },

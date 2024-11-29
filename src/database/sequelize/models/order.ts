@@ -10,10 +10,17 @@ const Order = (connection: Connection) => {
                 primaryKey: true,
                 type: DataTypes.UUID,
                 allowNull: false,
-                defaultValue: DataTypes.UUIDV4,
+            },
+            queue: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
             },
             code: {
                 type: DataTypes.STRING,
+                allowNull: false,
+            },
+            total: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
             change_money: {
@@ -22,18 +29,6 @@ const Order = (connection: Connection) => {
             },
             discount: {
                 type: DataTypes.FLOAT,
-                allowNull: false,
-            },
-            total_order: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            total_price: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            queue: {
-                type: DataTypes.INTEGER,
                 allowNull: false,
             },
             note: {
@@ -58,7 +53,10 @@ const Order = (connection: Connection) => {
                 type: DataTypes.JSON,
                 allowNull: true,
             },
-
+            tax: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
             customer_id: {
                 type: DataTypes.UUID,
                 allowNull: true,
