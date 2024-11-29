@@ -21,11 +21,11 @@ class Usecase {
             const { meta, source } = await Sharp.Convert(
                 readFileSync(image.path),
                 image.filename,
-                'jpeg',
+                'webp',
                 80
             )
             Object.assign(image, meta)
-            image.path = `/${store_id}/product/${image.filename}`
+            image.path = `${store_id}/product/${image.filename}`
             const uri = await this.minio.Upload(
                 image.path,
                 source,
@@ -38,13 +38,9 @@ class Usecase {
         return images
     }
 
-    public async Store(body: Store) {
-        body.images = await this.upload(body.images, body.store_id)
+    private async validateName(name: string, store_id: string, id?: string) {
+        const product = await this.repository.GetByName(name, store_id, id)
 
-        const product = await this.repository.GetByName(
-            body.name,
-            body.store_id
-        )
         if (product)
             throw new error(
                 statusCode.UNPROCESSABLE_ENTITY,
@@ -55,6 +51,12 @@ class Usecase {
                 }),
                 true
             )
+    }
+
+    public async Store(body: Store) {
+        body.images = await this.upload(body.images, body.store_id)
+
+        await this.validateName(body.name, body.store_id)
 
         return this.repository.Store(body)
     }
@@ -75,6 +77,46 @@ class Usecase {
         }
 
         return result
+    }
+
+    private async deleteImage(images: File[]) {
+        const paths = images.map((image) => image.path)
+
+        for (const path of paths) {
+            await this.minio.Delete(path)
+        }
+    }
+
+    public async Update(body: Store, id: string) {
+        const result = await this.repository.GetByID(id)
+
+        if (!result) {
+            throw new error(
+                statusCode.NOT_FOUND,
+                statusCode[statusCode.NOT_FOUND]
+            )
+        }
+
+        await this.validateName(body.name, body.store_id, id)
+
+        this.deleteImage(result.images)
+        body.images = await this.upload(body.images, body.store_id)
+
+        return this.repository.Update(body, id)
+    }
+
+    public async Destroy(id: string) {
+        const result = await this.repository.GetByID(id)
+
+        if (!result) {
+            throw new error(
+                statusCode.NOT_FOUND,
+                statusCode[statusCode.NOT_FOUND]
+            )
+        }
+
+        this.deleteImage(result.images)
+        return this.repository.Delete(id)
     }
 }
 

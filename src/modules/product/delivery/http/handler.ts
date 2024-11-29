@@ -74,6 +74,44 @@ class Handler {
             return next(error)
         }
     }
+
+    public Update = async (req: any, res: Response, next: NextFunction) => {
+        try {
+            const body = ValidateFormRequest(StoreSchema, {
+                ...req.body,
+                images: req.files,
+            })
+            body.created_by = req.user.id
+            body.store_id = req.user.store.id
+
+            await this.usecase.Update(body, req.params.id)
+            this.logger.Info(statusCode[statusCode.OK], {
+                additional_info: this.http.AdditionalInfo(req, statusCode.OK),
+            })
+            return res.status(statusCode.OK).json({ message: 'UPDATED' })
+        } catch (error) {
+            return next(error)
+        } finally {
+            if (req.files.length > 0) {
+                req.files.map((file: any) => {
+                    unlinkSync(this.http.dest + '/' + file.filename)
+                })
+            }
+        }
+    }
+
+    public Destroy = async (req: any, res: Response, next: NextFunction) => {
+        try {
+            const data = await this.usecase.Destroy(req.params.id)
+            this.logger.Info(statusCode[statusCode.OK], {
+                additional_info: this.http.AdditionalInfo(req, statusCode.OK),
+            })
+
+            return res.json({ data })
+        } catch (error) {
+            return next(error)
+        }
+    }
 }
 
 export default Handler

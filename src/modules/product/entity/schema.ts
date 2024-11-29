@@ -14,7 +14,7 @@ const file = Joi.object({
 
 // define for schema validate
 export const StoreSchema = Joi.object<Store>({
-    code: Joi.string().optional(),
+    code: Joi.string().required(),
     name: Joi.string().required(),
     unit: Joi.string().required(),
     category: Joi.string().required(),
@@ -22,6 +22,6 @@ export const StoreSchema = Joi.object<Store>({
     grosir_price: Joi.number().required(),
     stock: Joi.number().required(),
     discount: Joi.number().required(),
-    description: Joi.string().required(),
-    images: Joi.array().items(file).min(1),
+    description: Joi.string().allow('').default(''),
+    images: Joi.array().items(file).optional().default([]),
 })

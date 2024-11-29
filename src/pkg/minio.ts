@@ -30,6 +30,12 @@ class Minio {
             throw error
         }
     }
+
+    public async Delete(path: string) {
+        return this.client.removeObject(this.minio.bucket, path, {
+            forceDelete: true,
+        })
+    }
 }
 
 export default Minio

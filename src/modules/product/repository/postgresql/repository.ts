@@ -10,12 +10,15 @@ class Repository {
         return this.schema.product.create(body)
     }
 
-    public async GetByName(name: string, store_id: string) {
+    public async GetByName(name: string, store_id: string, id?: string) {
+        const where = {
+            name,
+            store_id,
+        }
+
+        if (id) Object.assign(where, { id: { [this.schema.Op.not]: id } })
         return this.schema.product.findOne({
-            where: {
-                name,
-                store_id,
-            },
+            where,
         })
     }
 
@@ -36,6 +39,25 @@ class Repository {
             data: rows,
             count,
         }
+    }
+
+    public async Update(body: Store, id: string) {
+        return this.schema.product.update(
+            { ...body, updated_at: new Date() },
+            {
+                where: {
+                    id,
+                },
+            }
+        )
+    }
+
+    public async Delete(id: string) {
+        return this.schema.product.destroy({
+            where: {
+                id,
+            },
+        })
     }
 }
 
