@@ -123,7 +123,9 @@ class Usecase {
 
         try {
             await this.repository.ReceivedOrder(body, result.id)
-            await this.repository.SyncProducts(result.product_orders, t)
+            if (body.status === status.RECEIVED)
+                await this.repository.SyncProducts(result.product_orders, t)
+
             await t.commit()
         } catch (error) {
             await t.rollback()

@@ -50,7 +50,7 @@ class Handler {
             const store_id = req.params.store_id ?? req.user.store.id
             const request = GetRequest<{}>(req.query)
             const { data, count } = await this.usecase.Fetch(request, store_id)
-            
+
             this.logger.Info(statusCode[statusCode.OK], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),
             })

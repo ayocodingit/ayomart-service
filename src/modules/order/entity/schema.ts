@@ -68,7 +68,11 @@ export const ReceivedSchema = Joi.object<ReceivedOrder>({
     }),
     payment_method: Joi.string()
         .valid(...Object.values(payment_method))
-        .required(),
+        .when('status', {
+            is: status.RECEIVED,
+            then: Joi.required(),
+            otherwise: Joi.optional(),
+        }),
     note: Joi.string().required().allow(''),
     proof_of_payment: Joi.array().items(file).optional().default([]),
     status: Joi.string().valid(status.RECEIVED, status.REJECTED).required(),
