@@ -2,12 +2,13 @@ import error from '../../../pkg/error'
 import Logger from '../../../pkg/logger'
 import Minio from '../../../pkg/minio'
 import statusCode from '../../../pkg/statusCode'
-import { Fetch, File, Store } from '../entity/interface'
+import { Fetch, File, ReceivedOrder, Store } from '../entity/interface'
 import Repository from '../repository/postgresql/repository'
 import { readFileSync } from 'fs'
 import Sharp from '../../../pkg/sharp'
 import { RequestParams } from '../../../helpers/requestParams'
 import { Translate } from '../../../helpers/translate'
+import { status } from '../../../database/constant/order'
 
 class Usecase {
     constructor(
@@ -39,37 +40,44 @@ class Usecase {
     }
 
     public async Store(body: Store) {
+        const store = await this.repository.GetStoreByID(body.store_id)
+        if (!store) {
+            throw new error(
+                statusCode.UNPROCESSABLE_ENTITY,
+                JSON.stringify({
+                    store_id: Translate('exists', {
+                        attribute: 'store_id',
+                    }),
+                }),
+                true
+            )
+        }
+
+        const productOrder = await this.repository.getProductOrder(
+            body.products,
+            body.store_id,
+            store.tax,
+            store.isTaxBorneCustomer
+        )
+
+        body.proof_of_payment = await this.upload(
+            body.proof_of_payment,
+            body.store_id
+        )
+
         const t = await this.repository.GetTransaction()
         try {
-            const store = await this.repository.GetStoreByID(body.store_id)
-            if (!store) {
-                throw new error(
-                    statusCode.UNPROCESSABLE_ENTITY,
-                    JSON.stringify({
-                        store_id: Translate('exists', {
-                            attribute: 'store_id',
-                        }),
-                    }),
-                    true
-                )
-            }
-
-            const productOrder = await this.repository.getProductOrder(
-                body.products,
-                body.store_id,
-                store.tax,
-                store.isTaxBorneCustomer
-            )
-
-            body.proof_of_payment = await this.upload(
-                body.proof_of_payment,
-                body.store_id
-            )
-
             const order = await this.repository.Store(body, productOrder, t)
 
-            await this.repository.StoreProduct(productOrder, order.id, t)
+            const products = await this.repository.StoreProduct(
+                productOrder,
+                order.id,
+                t
+            )
+
+            await this.repository.SyncProducts(products, t)
             await t.commit()
+            return order
         } catch (error) {
             await t.rollback()
             throw error
@@ -94,29 +102,41 @@ class Usecase {
         return result
     }
 
-    public async UpdateStatus(
-        status: string,
-        id: string,
-        store_id: string,
-        user_id: string
-    ) {
-        const result = await this.repository.GetByID(id)
+    public async ReceivedOrder(body: ReceivedOrder, code: string) {
+        const result = await this.repository.GetByCode(code)
 
-        if (!result) {
+        if (!result || result.status !== status.PENDING) {
             throw new error(
                 statusCode.NOT_FOUND,
                 statusCode[statusCode.NOT_FOUND]
             )
         }
 
-        if (!Object.values(status).includes(status)) {
-            throw new error(
-                statusCode.BAD_REQUEST,
-                statusCode[statusCode.BAD_REQUEST]
-            )
-        }
+        this.deleteImage(result.proof_of_payment)
 
-        return this.repository.UpdateStatus(status, id, store_id, user_id)
+        body.proof_of_payment = await this.upload(
+            body.proof_of_payment,
+            body.store_id
+        )
+
+        const t = await this.repository.GetTransaction()
+
+        try {
+            await this.repository.ReceivedOrder(body, result.id)
+            await this.repository.SyncProducts(result.product_orders, t)
+            await t.commit()
+        } catch (error) {
+            await t.rollback()
+            throw error
+        }
+    }
+
+    private async deleteImage(images: File[]) {
+        const paths = images.map((image) => image.path)
+
+        for (const path of paths) {
+            await this.minio.Delete(path)
+        }
     }
 }
 

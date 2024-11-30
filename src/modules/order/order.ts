@@ -43,7 +43,11 @@ class Order {
         )
         Router.get('/', handler.Fetch as RequestHandler)
         Router.get('/:id', handler.Show as RequestHandler)
-        Router.patch('/status', handler.UpdateStatus as RequestHandler)
+        Router.put(
+            '/:code/received',
+            http.Upload('proof_of_payment'),
+            handler.ReceivedOrder as RequestHandler
+        )
 
         http.SetRouter('/v1/orders/', auth, Router)
     }

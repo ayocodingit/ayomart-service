@@ -40,6 +40,10 @@ const Order = (connection: Connection) => {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
+            pickup_time_at: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
             order_type: {
                 type: DataTypes.STRING,
                 allowNull: false,

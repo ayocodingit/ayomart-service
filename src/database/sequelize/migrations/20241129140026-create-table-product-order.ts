@@ -7,13 +7,17 @@ import { DataTypes, QueryInterface } from 'sequelize'
 module.exports = {
     async up(queryInterface: QueryInterface) {
         return queryInterface
-            .createTable('product_order', {
+            .createTable('product_orders', {
                 id: {
                     primaryKey: true,
                     type: DataTypes.UUID,
                     allowNull: false,
                 },
                 order_id: {
+                    type: DataTypes.UUID,
+                    allowNull: false,
+                },
+                product_id: {
                     type: DataTypes.UUID,
                     allowNull: false,
                 },
@@ -55,7 +59,7 @@ module.exports = {
                 },
             })
             .then(() => {
-                return queryInterface.addIndex('product_order', [
+                return queryInterface.addIndex('product_orders', [
                     'order_id',
                     'name',
                 ])
@@ -63,6 +67,6 @@ module.exports = {
     },
 
     async down(queryInterface: QueryInterface) {
-        return queryInterface.dropTable('product_order')
+        return queryInterface.dropTable('product_orders')
     },
 }

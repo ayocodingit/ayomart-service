@@ -3,6 +3,7 @@ import {
     Fetch,
     Product,
     ProductOrder,
+    ReceivedOrder,
     Store,
     StoreProduct,
 } from '../../entity/interface'
@@ -12,6 +13,8 @@ import { Order, Transaction } from 'sequelize'
 import { order_type, status } from '../../../../database/constant/order'
 import { endOfDay, format, startOfDay } from 'date-fns'
 import { isValidDate } from '../../../../helpers/date'
+import error from '../../../../pkg/error'
+import statusCode from '../../../../pkg/statusCode'
 
 class Repository {
     constructor(private logger: Logger, private schema: Schema) {}
@@ -70,6 +73,15 @@ class Repository {
         })
     }
 
+    public async GetByCode(code: string) {
+        return this.schema.order.findOne({
+            where: {
+                code,
+            },
+            include: this.schema.productOrder,
+        })
+    }
+
     public async Fetch(request: RequestParams<Fetch>, store_id: string) {
         const where = { store_id }
         const order: Order = []
@@ -112,6 +124,7 @@ class Repository {
             offset: request.offset,
             where,
             order,
+            include: this.schema.productOrder,
         })
 
         return {
@@ -157,10 +170,20 @@ class Repository {
                 id: {
                     [this.schema.Op.in]: items.map((item) => item.id),
                 },
+                stock: {
+                    [this.schema.Op.gt]: 0,
+                },
                 store_id,
             },
-            attributes: ['id', 'name', 'price', 'discount', 'unit'],
+            attributes: ['id', 'name', 'price', 'discount', 'unit', 'stock'],
         })
+
+        if (result.length != items.length) {
+            throw new error(
+                statusCode.BAD_REQUEST,
+                'transaksi gagal karena terdapat produk yang tidak tersedia'
+            )
+        }
 
         const products: Product[] = []
         let total = 0
@@ -173,6 +196,7 @@ class Repository {
                 item.qty
 
             products.push({
+                product_id: product.id,
                 name: product.name,
                 unit: product.unit,
                 price: product.price,
@@ -190,28 +214,33 @@ class Repository {
 
         tax = total * (tax / 100)
 
-        if (isTaxBorneCustomer) {
-            total = total + tax
-        }
+        if (isTaxBorneCustomer) total = total + tax
 
         return { products, total, discount, tax, isTaxBorneCustomer }
     }
 
-    public async UpdateStatus(
-        status: string,
-        id: string,
-        store_id: string,
-        user_id: string
-    ) {
+    public async ReceivedOrder(body: ReceivedOrder, id: string) {
         return this.schema.order.update(
-            { status, update_at: new Date(), received_by: user_id },
+            { ...body, update_at: new Date() },
             {
                 where: {
                     id,
-                    store_id,
+                    store_id: body.store_id,
                 },
             }
         )
+    }
+
+    public async SyncProducts(products: any[], t: Transaction) {
+        for (const product of products) {
+            await this.schema.product.increment('stock', {
+                by: -product.qty,
+                where: {
+                    id: product.product_id,
+                },
+                transaction: t,
+            })
+        }
     }
 }
 

@@ -1,7 +1,12 @@
 import Joi from 'joi'
-import { Store } from './interface'
+import { ReceivedOrder, Store } from './interface'
 import config from '../../../config/config'
-import { order_type, payment_method } from '../../../database/constant/order'
+import {
+    order_type,
+    payment_method,
+    status,
+} from '../../../database/constant/order'
+import { startOfDay } from 'date-fns'
 
 const file = Joi.object({
     path: Joi.string().required(),
@@ -28,17 +33,20 @@ export const StoreSchema = Joi.object<Store>({
     paid: Joi.number().when('order_type', {
         is: order_type.CASHIER,
         then: Joi.required(),
-        otherwise: Joi.optional(),
+        otherwise: Joi.forbidden(),
     }),
     note: Joi.string().required().allow(''),
     order_type: Joi.string()
         .valid(...Object.values(order_type))
         .required(),
-    pickup_time: Joi.date().when('order_type', {
-        is: order_type.PICKUP,
-        then: Joi.required(),
-        otherwise: Joi.optional(),
-    }),
+    pickup_time: Joi.date()
+        .max('now')
+        .min(startOfDay(new Date()))
+        .when('order_type', {
+            is: order_type.PICKUP,
+            then: Joi.required(),
+            otherwise: Joi.optional(),
+        }),
     payment_method: Joi.string()
         .valid(...Object.values(payment_method))
         .required(),
@@ -50,4 +58,18 @@ export const StoreSchema = Joi.object<Store>({
     }),
     customer_id: Joi.string().optional(),
     products,
+})
+
+export const ReceivedSchema = Joi.object<ReceivedOrder>({
+    paid: Joi.number().when('status', {
+        is: status.RECEIVED,
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+    }),
+    payment_method: Joi.string()
+        .valid(...Object.values(payment_method))
+        .required(),
+    note: Joi.string().required().allow(''),
+    proof_of_payment: Joi.array().items(file).optional().default([]),
+    status: Joi.string().valid(status.RECEIVED, status.REJECTED).required(),
 })

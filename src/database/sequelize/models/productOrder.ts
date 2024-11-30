@@ -3,7 +3,7 @@ import { Connection } from '../interface'
 
 const ProductOrder = (connection: Connection) => {
     return connection.define(
-        'product_order',
+        'product_orders',
         {
             id: {
                 primaryKey: true,
@@ -12,6 +12,10 @@ const ProductOrder = (connection: Connection) => {
                 defaultValue: DataTypes.UUIDV4,
             },
             order_id: {
+                type: DataTypes.UUID,
+                allowNull: false,
+            },
+            product_id: {
                 type: DataTypes.UUID,
                 allowNull: false,
             },
@@ -48,7 +52,6 @@ const ProductOrder = (connection: Connection) => {
             timestamps: true,
             createdAt: 'created_at',
             updatedAt: 'updated_at',
-            tableName: 'product_order',
         }
     )
 }

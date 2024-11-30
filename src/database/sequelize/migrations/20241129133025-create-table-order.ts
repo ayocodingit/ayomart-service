@@ -42,6 +42,10 @@ module.exports = {
                     type: DataTypes.DATE,
                     allowNull: true,
                 },
+                pickup_time_at: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                },
                 order_type: {
                     type: DataTypes.STRING,
                     allowNull: false,
@@ -96,7 +100,7 @@ module.exports = {
                     .then(() => {
                         return queryInterface.addIndex('orders', [
                             'store_id',
-                            'created_by',
+                            'received_by',
                         ])
                     })
             })

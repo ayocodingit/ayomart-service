@@ -4,7 +4,7 @@ import Usecase from '../../usecase/usecase'
 import { NextFunction, Response } from 'express'
 import statusCode from '../../../../pkg/statusCode'
 import { ValidateFormRequest } from '../../../../helpers/validate'
-import { StoreSchema } from '../../entity/schema'
+import { ReceivedSchema, StoreSchema } from '../../entity/schema'
 import { unlinkSync } from 'fs'
 import { GetMeta, GetRequest } from '../../../../helpers/requestParams'
 import { Fetch } from '../../entity/interface'
@@ -81,18 +81,23 @@ class Handler {
         }
     }
 
-    public UpdateStatus = async (
+    public ReceivedOrder = async (
         req: any,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            await this.usecase.UpdateStatus(
-                req.query.status,
-                req.params.id,
-                req.user.store.id,
-                req.user.id
-            )
+            const body = ValidateFormRequest(ReceivedSchema, {
+                ...req.body,
+                proof_of_payment: req.files,
+            })
+            body.received_by = req.user.id
+            body.store_id = req.user.store.id
+
+            if (body.status === status.RECEIVED)
+                body.pickup_time_at = new Date()
+
+            await this.usecase.ReceivedOrder(body, req.params.code)
             this.logger.Info(statusCode[statusCode.OK], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),
             })
@@ -100,6 +105,12 @@ class Handler {
             return res.json({ message: 'UPDATED' })
         } catch (error) {
             return next(error)
+        } finally {
+            if (req.files) {
+                req.files.map((file: any) => {
+                    unlinkSync(this.http.dest + '/' + file.filename)
+                })
+            }
         }
     }
 }
