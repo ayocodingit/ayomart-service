@@ -1,6 +1,6 @@
 export const status = {
+    PENDING: 'pending',
     RECEIVED: 'received',
-    PROCESS: 'process',
     REJECTED: 'rejected',
 }
 

@@ -47,16 +47,24 @@ class Usecase {
         const user = await this.repository.GetByEmail(body.email)
 
         if (!user) {
-            throw new error(statusCode.UNAUTHORIZED, 'login gagal')
+            throw new error(
+                statusCode.UNAUTHORIZED,
+                'email atau kata sandi salah'
+            )
         }
 
-        console.log(user)
+        if (!(await isMatchPassword(body.password, user.password))) {
+            throw new error(
+                statusCode.UNAUTHORIZED,
+                'email atau kata sandi salah'
+            )
+        }
 
-        if (
-            !(await isMatchPassword(body.password, user.password)) ||
-            user.status !== status.VERIFY
-        ) {
-            throw new error(statusCode.UNAUTHORIZED, 'login gagal')
+        if (user.status !== status.VERIFIED) {
+            throw new error(
+                statusCode.FORBIDDEN,
+                'akun anda belum terverifikasi'
+            )
         }
 
         const access_token = this.jwt.Sign(

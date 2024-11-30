@@ -1,6 +1,7 @@
 import { parseISO, isValid, addDays } from 'date-fns'
 
 export const isValidDate = (date: string) => {
+    if (!date) return false
     const parsedDate = parseISO(date)
     return isValid(parsedDate)
 }

@@ -28,12 +28,12 @@ const Product = (connection: Connection) => {
                 allowNull: false,
             },
             price: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
                 defaultValue: 0,
             },
             grosir_price: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
                 defaultValue: 0,
             },
@@ -43,7 +43,7 @@ const Product = (connection: Connection) => {
                 defaultValue: 0,
             },
             discount: {
-                type: DataTypes.FLOAT,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
                 defaultValue: 0,
             },

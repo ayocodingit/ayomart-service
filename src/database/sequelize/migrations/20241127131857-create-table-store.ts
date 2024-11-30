@@ -35,9 +35,14 @@ module.exports = {
                     allowNull: true,
                 },
                 tax: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: true,
                     defaultValue: 0,
+                },
+                isTaxBorneCustomer: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: false,
                 },
                 created_by: {
                     type: DataTypes.UUID,

@@ -20,19 +20,19 @@ const ProductOrder = (connection: Connection) => {
                 allowNull: false,
             },
             qty: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
             },
             price: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
             },
             discount: {
-                type: DataTypes.FLOAT,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
             },
             voucher: {
-                type: DataTypes.FLOAT,
+                type: DataTypes.DOUBLE,
                 allowNull: false,
             },
             unit: {
@@ -48,6 +48,7 @@ const ProductOrder = (connection: Connection) => {
             timestamps: true,
             createdAt: 'created_at',
             updatedAt: 'updated_at',
+            tableName: 'product_order',
         }
     )
 }

@@ -7,6 +7,8 @@ import { ValidateFormRequest } from '../../../../helpers/validate'
 import { StoreSchema } from '../../entity/schema'
 import { unlinkSync } from 'fs'
 import { GetMeta, GetRequest } from '../../../../helpers/requestParams'
+import { Fetch } from '../../entity/interface'
+import { status } from '../../../../database/constant/order'
 
 class Handler {
     constructor(
@@ -21,7 +23,12 @@ class Handler {
                 ...req.body,
                 proof_of_payment: req.files,
             })
-            if (req?.user.store.id) body.store_id = req.user.store.id
+
+            if (req.user) {
+                body.store_id = req.user.store.id
+                body.received_by = req.user.id
+                body.status = status.RECEIVED
+            }
 
             const result = await this.usecase.Store(body)
             this.logger.Info(statusCode[statusCode.CREATED], {
@@ -46,7 +53,7 @@ class Handler {
 
     public Fetch = async (req: any, res: Response, next: NextFunction) => {
         try {
-            const request = GetRequest<{ status: string }>(req.query)
+            const request = GetRequest<Fetch>(req.query)
             const { data, count } = await this.usecase.Fetch(
                 request,
                 req.user.store.id
@@ -83,7 +90,8 @@ class Handler {
             await this.usecase.UpdateStatus(
                 req.query.status,
                 req.params.id,
-                req.user.store.id
+                req.user.store.id,
+                req.user.id
             )
             this.logger.Info(statusCode[statusCode.OK], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),

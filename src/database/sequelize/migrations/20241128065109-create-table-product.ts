@@ -30,12 +30,12 @@ module.exports = {
                     allowNull: false,
                 },
                 price: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                     defaultValue: 0,
                 },
                 grosir_price: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                     defaultValue: 0,
                 },
@@ -45,7 +45,7 @@ module.exports = {
                     defaultValue: 0,
                 },
                 discount: {
-                    type: DataTypes.FLOAT,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                     defaultValue: 0,
                 },

@@ -1,5 +1,6 @@
 import Logger from '../../../../pkg/logger'
 import {
+    Fetch,
     Product,
     ProductOrder,
     Store,
@@ -8,8 +9,9 @@ import {
 import { Schema } from '../../../../database/sequelize/interface'
 import { RequestParams } from '../../../../helpers/requestParams'
 import { Order, Transaction } from 'sequelize'
-import { status } from '../../../../database/constant/order'
-import { format } from 'date-fns'
+import { order_type, status } from '../../../../database/constant/order'
+import { endOfDay, format, startOfDay } from 'date-fns'
+import { isValidDate } from '../../../../helpers/date'
 
 class Repository {
     constructor(private logger: Logger, private schema: Schema) {}
@@ -17,16 +19,17 @@ class Repository {
     public async Store(
         body: Store,
         productProduct: ProductOrder,
-        tax: number,
         t: Transaction
     ) {
         return this.schema.order.create(
             {
                 ...body,
+                ...productProduct,
                 code: this.generateOrderNumber(),
-                total: productProduct.total,
-                discount: productProduct.discount,
-                tax,
+                change_money:
+                    body.order_type == order_type.CASHIER
+                        ? body.paid - productProduct.total
+                        : 0,
             },
             {
                 transaction: t,
@@ -45,6 +48,7 @@ class Repository {
                 order_id,
             }
         })
+
         return this.schema.productOrder.bulkCreate(productOrder, {
             transaction: t,
         })
@@ -55,7 +59,9 @@ class Repository {
     }
 
     public async GetStoreByID(id: string) {
-        return this.schema.store.findByPk(id)
+        return this.schema.store.findByPk(id, {
+            attributes: ['id', 'tax', 'isTaxBorneCustomer'],
+        })
     }
 
     public async GetByID(id: string) {
@@ -64,10 +70,7 @@ class Repository {
         })
     }
 
-    public async Fetch(
-        request: RequestParams<{ status: string }>,
-        store_id: string
-    ) {
+    public async Fetch(request: RequestParams<Fetch>, store_id: string) {
         const where = { store_id }
         const order: Order = []
 
@@ -81,12 +84,27 @@ class Repository {
 
         if (Object.values(status).includes(request.status)) {
             Object.assign(where, {
-                status,
+                status: request.status,
             })
         }
 
         if (['created_at'].includes(request.sort_by)) {
             order.push([request.sort_by, request.sort_order])
+        }
+
+        if (isValidDate(request.start_date) && isValidDate(request.end_date)) {
+            Object.assign(where, {
+                created_at: {
+                    [this.schema.Op.between]: [
+                        startOfDay(new Date(request.start_date)),
+                        endOfDay(new Date(request.end_date)),
+                    ],
+                },
+            })
+        }
+
+        if (order.length === 0) {
+            order.push(['created_at', 'desc'])
         }
 
         const { count, rows } = await this.schema.order.findAndCountAll({
@@ -122,7 +140,12 @@ class Repository {
         return voucher
     }
 
-    public async getProductOrder(items: StoreProduct[], store_id: string) {
+    public async getProductOrder(
+        items: StoreProduct[],
+        store_id: string,
+        tax: number,
+        isTaxBorneCustomer: boolean
+    ) {
         const result: {
             id: string
             price: number
@@ -132,7 +155,7 @@ class Repository {
         }[] = await this.schema.product.findAll({
             where: {
                 id: {
-                    [this.schema.Op.in]: items.map((item) => item.product_id),
+                    [this.schema.Op.in]: items.map((item) => item.id),
                 },
                 store_id,
             },
@@ -143,9 +166,7 @@ class Repository {
         let total = 0
         let discount = 0
         for (const product of result) {
-            const item = items.filter(
-                (item) => item.product_id === product.id
-            )[0]
+            const item = items.filter((item) => item.id === product.id)[0]
 
             const voucher =
                 this.calculateDiscount(product.price, product.discount) *
@@ -161,16 +182,29 @@ class Repository {
                 qty: item.qty,
             })
 
+            const amount = item.qty * product.price
+
             discount += voucher
-            total += item.qty * product.price - voucher
+            total += amount - voucher
         }
 
-        return { products, total, discount }
+        tax = total * (tax / 100)
+
+        if (isTaxBorneCustomer) {
+            total = total + tax
+        }
+
+        return { products, total, discount, tax, isTaxBorneCustomer }
     }
 
-    public async UpdateStatus(status: string, id: string, store_id: string) {
+    public async UpdateStatus(
+        status: string,
+        id: string,
+        store_id: string,
+        user_id: string
+    ) {
         return this.schema.order.update(
-            { status, update_at: new Date() },
+            { status, update_at: new Date(), received_by: user_id },
             {
                 where: {
                     id,

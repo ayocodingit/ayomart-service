@@ -36,7 +36,11 @@ class Order {
         const jwt = new Jwt(this.config.jwt.access_key)
         const auth = VerifyAuth(jwt)
 
-        Router.post('/', http.Upload('files'), handler.Store as RequestHandler)
+        Router.post(
+            '/',
+            http.Upload('proof_of_payment'),
+            handler.Store as RequestHandler
+        )
         Router.get('/', handler.Fetch as RequestHandler)
         Router.get('/:id', handler.Show as RequestHandler)
         Router.patch('/status', handler.UpdateStatus as RequestHandler)

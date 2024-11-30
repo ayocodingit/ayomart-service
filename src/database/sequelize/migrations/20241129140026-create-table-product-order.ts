@@ -22,19 +22,19 @@ module.exports = {
                     allowNull: false,
                 },
                 qty: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 price: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 discount: {
-                    type: DataTypes.FLOAT,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 voucher: {
-                    type: DataTypes.FLOAT,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 unit: {

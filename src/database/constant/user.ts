@@ -5,5 +5,5 @@ export const role = {
 
 export const status = {
     PENDING: 'pending',
-    VERIFY: 'verify',
+    VERIFIED: 'verified',
 }

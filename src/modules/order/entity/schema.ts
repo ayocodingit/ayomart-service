@@ -16,17 +16,20 @@ const file = Joi.object({
 const products = Joi.array()
     .items(
         Joi.object({
-            product_id: Joi.string().required(),
+            id: Joi.string().required(),
             note: Joi.string().required().allow(''),
-            qty: Joi.number().required(),
+            qty: Joi.number().min(1).required(),
         })
     )
     .min(1)
 
 // define for schema validate
 export const StoreSchema = Joi.object<Store>({
-    paid: Joi.number().required(),
-    change_money: Joi.number().required(),
+    paid: Joi.number().when('order_type', {
+        is: order_type.CASHIER,
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+    }),
     note: Joi.string().required().allow(''),
     order_type: Joi.string()
         .valid(...Object.values(order_type))

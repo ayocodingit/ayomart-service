@@ -19,19 +19,19 @@ module.exports = {
                     allowNull: false,
                 },
                 paid: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 total: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 change_money: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
+                    type: DataTypes.DOUBLE,
+                    allowNull: true,
                 },
                 discount: {
-                    type: DataTypes.FLOAT,
+                    type: DataTypes.DOUBLE,
                     allowNull: false,
                 },
                 note: {
@@ -57,7 +57,11 @@ module.exports = {
                     allowNull: true,
                 },
                 tax: {
-                    type: DataTypes.INTEGER,
+                    type: DataTypes.DOUBLE,
+                    allowNull: false,
+                },
+                isTaxBorneCustomer: {
+                    type: DataTypes.BOOLEAN,
                     allowNull: false,
                 },
                 customer_id: {
@@ -69,7 +73,7 @@ module.exports = {
                     allowNull: false,
                     defaultValue: status.RECEIVED,
                 },
-                created_by: {
+                received_by: {
                     type: DataTypes.UUID,
                     allowNull: true,
                 },

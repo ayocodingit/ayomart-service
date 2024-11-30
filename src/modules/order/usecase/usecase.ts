@@ -2,7 +2,7 @@ import error from '../../../pkg/error'
 import Logger from '../../../pkg/logger'
 import Minio from '../../../pkg/minio'
 import statusCode from '../../../pkg/statusCode'
-import { File, Store } from '../entity/interface'
+import { Fetch, File, Store } from '../entity/interface'
 import Repository from '../repository/postgresql/repository'
 import { readFileSync } from 'fs'
 import Sharp from '../../../pkg/sharp'
@@ -56,7 +56,9 @@ class Usecase {
 
             const productOrder = await this.repository.getProductOrder(
                 body.products,
-                body.store_id
+                body.store_id,
+                store.tax,
+                store.isTaxBorneCustomer
             )
 
             body.proof_of_payment = await this.upload(
@@ -64,12 +66,7 @@ class Usecase {
                 body.store_id
             )
 
-            const order = await this.repository.Store(
-                body,
-                productOrder,
-                store.tax,
-                t
-            )
+            const order = await this.repository.Store(body, productOrder, t)
 
             await this.repository.StoreProduct(productOrder, order.id, t)
             await t.commit()
@@ -79,10 +76,7 @@ class Usecase {
         }
     }
 
-    public async Fetch(
-        request: RequestParams<{ status: string }>,
-        store_id: string
-    ) {
+    public async Fetch(request: RequestParams<Fetch>, store_id: string) {
         const result = await this.repository.Fetch(request, store_id)
         return result
     }
@@ -100,7 +94,12 @@ class Usecase {
         return result
     }
 
-    public async UpdateStatus(status: string, id: string, store_id: string) {
+    public async UpdateStatus(
+        status: string,
+        id: string,
+        store_id: string,
+        user_id: string
+    ) {
         const result = await this.repository.GetByID(id)
 
         if (!result) {
@@ -117,7 +116,7 @@ class Usecase {
             )
         }
 
-        return this.repository.UpdateStatus(status, id, store_id)
+        return this.repository.UpdateStatus(status, id, store_id, user_id)
     }
 }
 
