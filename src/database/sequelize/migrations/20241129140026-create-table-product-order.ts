@@ -57,7 +57,7 @@ module.exports = {
             .then(() => {
                 return queryInterface.addIndex('product_order', [
                     'order_id',
-                    'product_name',
+                    'name',
                 ])
             })
     },
