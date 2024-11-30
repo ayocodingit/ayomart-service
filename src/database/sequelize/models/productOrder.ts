@@ -15,7 +15,7 @@ const ProductOrder = (connection: Connection) => {
                 type: DataTypes.UUID,
                 allowNull: false,
             },
-            product_name: {
+            name: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
@@ -25,6 +25,18 @@ const ProductOrder = (connection: Connection) => {
             },
             price: {
                 type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            discount: {
+                type: DataTypes.FLOAT,
+                allowNull: false,
+            },
+            voucher: {
+                type: DataTypes.FLOAT,
+                allowNull: false,
+            },
+            unit: {
+                type: DataTypes.STRING,
                 allowNull: false,
             },
             note: {

@@ -14,12 +14,12 @@ module.exports = {
                     type: DataTypes.UUID,
                     allowNull: false,
                 },
-                queue: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
-                },
                 code: {
                     type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                paid: {
+                    type: DataTypes.INTEGER,
                     allowNull: false,
                 },
                 total: {
@@ -71,7 +71,7 @@ module.exports = {
                 },
                 created_by: {
                     type: DataTypes.UUID,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 store_id: {
                     type: DataTypes.UUID,
@@ -87,11 +87,14 @@ module.exports = {
                 },
             })
             .then(() => {
-                return queryInterface.addIndex('orders', [
-                    'code',
-                    'order_type',
-                    'status',
-                ])
+                return queryInterface
+                    .addIndex('orders', ['code', 'order_type', 'status'])
+                    .then(() => {
+                        return queryInterface.addIndex('orders', [
+                            'store_id',
+                            'created_by',
+                        ])
+                    })
             })
     },
 

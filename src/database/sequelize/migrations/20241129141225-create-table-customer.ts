@@ -35,10 +35,13 @@ module.exports = {
                 },
             })
             .then(() => {
-                return queryInterface.addIndex('customers', [
-                    'name',
-                    'phone_number',
-                ])
+                return queryInterface
+                    .addIndex('customers', ['name', 'phone_number'])
+                    .then(() => {
+                        return queryInterface.addIndex('customers', [
+                            'store_id',
+                        ])
+                    })
             })
     },
 

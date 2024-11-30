@@ -11,12 +11,12 @@ const Order = (connection: Connection) => {
                 type: DataTypes.UUID,
                 allowNull: false,
             },
-            queue: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
             code: {
                 type: DataTypes.STRING,
+                allowNull: false,
+            },
+            paid: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
             total: {
@@ -68,7 +68,7 @@ const Order = (connection: Connection) => {
             },
             created_by: {
                 type: DataTypes.UUID,
-                allowNull: false,
+                allowNull: true,
             },
             store_id: {
                 type: DataTypes.UUID,

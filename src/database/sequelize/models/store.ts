@@ -31,6 +31,11 @@ const Store = (connection: Connection) => {
                 type: DataTypes.JSON,
                 allowNull: true,
             },
+            tax: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                defaultValue: 0,
+            },
             created_by: {
                 type: DataTypes.UUID,
                 allowNull: false,

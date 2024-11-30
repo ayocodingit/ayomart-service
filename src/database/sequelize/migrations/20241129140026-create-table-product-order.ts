@@ -17,7 +17,7 @@ module.exports = {
                     type: DataTypes.UUID,
                     allowNull: false,
                 },
-                product_name: {
+                name: {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
@@ -27,6 +27,18 @@ module.exports = {
                 },
                 price: {
                     type: DataTypes.INTEGER,
+                    allowNull: false,
+                },
+                discount: {
+                    type: DataTypes.FLOAT,
+                    allowNull: false,
+                },
+                voucher: {
+                    type: DataTypes.FLOAT,
+                    allowNull: false,
+                },
+                unit: {
+                    type: DataTypes.STRING,
                     allowNull: false,
                 },
                 note: {
