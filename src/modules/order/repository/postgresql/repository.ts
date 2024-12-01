@@ -165,6 +165,7 @@ class Repository {
             name: string
             discount: number
             unit: string
+            stock: number
         }[] = await this.schema.product.findAll({
             where: {
                 id: {
@@ -210,6 +211,13 @@ class Repository {
 
             discount += voucher
             total += amount - voucher
+
+            if (item.qty > product.stock) {
+                throw new error(
+                    statusCode.BAD_REQUEST,
+                    'transaksi gagal karena terdapat produk yang tidak tersedia'
+                )
+            }
         }
 
         tax = total * (tax / 100)
