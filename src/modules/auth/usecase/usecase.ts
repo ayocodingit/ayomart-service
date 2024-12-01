@@ -1,4 +1,4 @@
-import { status } from '../../../database/constant/user'
+import { role, status } from '../../../database/constant/user'
 import { Translate } from '../../../helpers/translate'
 import { generatePassword, isMatchPassword } from '../../../pkg/bcrypt'
 import error from '../../../pkg/error'
@@ -67,15 +67,21 @@ class Usecase {
             )
         }
 
+        let store
+        if (user.role === role.SELLER) {
+            store = {
+                id: user.store.id,
+                name: user.store.name,
+            }
+        }
+
         const access_token = this.jwt.Sign(
             {
                 id: user.id,
                 email: user.email,
+                username: user.username,
                 role: user.role,
-                store: {
-                    id: user.store.id,
-                    name: user.store.name,
-                },
+                store,
             },
             {
                 expiresIn: '4h',

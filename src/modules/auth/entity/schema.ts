@@ -13,5 +13,5 @@ export const StoreSchema = Joi.object<Store>({
 
 export const LoginSchema = Joi.object<Login>({
     email: Joi.string().email().required(),
-    password: Joi.string().min(6).required(),
+    password: Joi.string().required(),
 })

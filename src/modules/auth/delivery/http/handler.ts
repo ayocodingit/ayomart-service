@@ -17,15 +17,12 @@ class Handler {
         try {
             const body = ValidateFormRequest(StoreSchema, req.body)
             const result = await this.usecase.Store(body)
-            this.logger.Info(statusCode[statusCode.CREATED], {
-                additional_info: this.http.AdditionalInfo(
-                    req,
-                    statusCode.CREATED
-                ),
+            this.logger.Info(statusCode[statusCode.OK], {
+                additional_info: this.http.AdditionalInfo(req, statusCode.OK),
             })
             return res
-                .status(statusCode.CREATED)
-                .json({ data: result, message: 'CREATED' })
+                .status(statusCode.OK)
+                .json({ data: result, message: 'OK' })
         } catch (error) {
             return next(error)
         }
@@ -44,6 +41,21 @@ class Handler {
             return res.status(statusCode.CREATED).json({
                 data: {
                     access_token,
+                },
+            })
+        } catch (error) {
+            return next(error)
+        }
+    }
+
+    public Me = async (req: any, res: Response, next: NextFunction) => {
+        try {
+            this.logger.Info(statusCode[statusCode.CREATED], {
+                additional_info: this.http.AdditionalInfo(req, statusCode.OK),
+            })
+            return res.status(statusCode.OK).json({
+                data: {
+                    ...req.user,
                 },
             })
         } catch (error) {

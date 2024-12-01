@@ -8,6 +8,7 @@ import Repository from './repository/postgresql/repository'
 import Sequelize from '../../database/sequelize/sequelize'
 import { RequestHandler } from 'express'
 import Jwt from '../../pkg/jwt'
+import { VerifyAuth } from '../../transport/http/middleware/verifyAuth'
 
 class Auth {
     public usecase: Usecase
@@ -31,9 +32,12 @@ class Auth {
 
     private httpPublic(handler: Handler, http: Http) {
         const Router = http.Router()
+        const jwt = new Jwt(this.config.jwt.access_key)
+        const auth = VerifyAuth(jwt)
 
         Router.post('/signup', handler.Store as RequestHandler)
         Router.post('/login', handler.Login as RequestHandler)
+        Router.get('/me', auth, handler.Me as RequestHandler)
 
         http.SetRouter('/v1/auth/', Router)
     }
