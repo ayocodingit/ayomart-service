@@ -118,6 +118,10 @@ class Usecase {
         this.deleteImage(result.images)
         return this.repository.Delete(id)
     }
+
+    public async GetCategories(store_id: string) {
+        return this.repository.GetCategories(store_id)
+    }
 }
 
 export default Usecase

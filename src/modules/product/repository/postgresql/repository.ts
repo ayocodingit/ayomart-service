@@ -3,6 +3,7 @@ import { Store } from '../../entity/interface'
 import { Schema } from '../../../../database/sequelize/interface'
 import { RequestParams } from '../../../../helpers/requestParams'
 import { Order } from 'sequelize'
+import sequelize from 'sequelize'
 
 class Repository {
     constructor(private logger: Logger, private schema: Schema) {}
@@ -72,6 +73,16 @@ class Repository {
             where: {
                 id,
             },
+        })
+    }
+
+    public async GetCategories(store_id: string) {
+        return this.schema.product.findAll({
+            group: ['category'],
+            where: {
+                store_id
+            },
+            attributes: ['category']
         })
     }
 }
