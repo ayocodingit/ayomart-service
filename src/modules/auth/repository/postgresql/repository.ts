@@ -7,13 +7,19 @@ class Repository {
     constructor(private logger: Logger, private schema: Schema) {}
 
     public async CreateUser(body: Store, t: Transaction) {
-        return this.schema.user.create(body, {
+        return this.schema.user.create({
+            username: body.username,
+            email: body.email,
+            password: body.password,
+        }, {
             transaction: t,
         })
     }
 
     public async CreateStore(body: Store, t: Transaction) {
-        return this.schema.store.create(body, {
+        return this.schema.store.create({
+            name: body.store_name,
+        }, {
             transaction: t,
         })
     }

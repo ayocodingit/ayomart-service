@@ -19,11 +19,11 @@ module.exports = {
                 },
                 address: {
                     type: DataTypes.STRING,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 phone_number: {
                     type: DataTypes.STRING,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 is_active: {
                     type: DataTypes.BOOLEAN,

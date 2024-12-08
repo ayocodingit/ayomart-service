@@ -2,9 +2,7 @@ export type Store = {
     username: string
     email: string
     password: string
-    name: string
-    address: string
-    phone_number: string
+    store_name: string
     created_by: string
 }
 
