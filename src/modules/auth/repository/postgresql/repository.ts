@@ -19,6 +19,7 @@ class Repository {
     public async CreateStore(body: Store, t: Transaction) {
         return this.schema.store.create({
             name: body.store_name,
+            created_by: body.created_by
         }, {
             transaction: t,
         })
