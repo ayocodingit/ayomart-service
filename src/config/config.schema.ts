@@ -11,7 +11,7 @@ export default Joi.object({
         .valid('info', 'error', 'warn', 'debug')
         .default('info'),
 
-    FILE_MAX: Joi.number().optional().default(1), // MB
+    FILE_MAX: Joi.number().optional().default(2), // MB
     FILE_URI: Joi.string().uri().optional(),
     FILE_TYPE: Joi.array().default(['image/jpeg', 'image/png']),
 
