@@ -22,7 +22,7 @@ class Handler {
                 images: req.files,
             })
             body.created_by = req.user.id
-            body.store_id = req.query.store_id ?? req.user.stores[0].id
+            body.store_id = req.store_id
 
             const result = await this.usecase.Store(body)
             this.logger.Info(statusCode[statusCode.CREATED], {
@@ -47,7 +47,7 @@ class Handler {
 
     public Fetch = async (req: any, res: Response, next: NextFunction) => {
         try {
-            const store_id = req.query.store_id ?? req.user.stores[0].id
+            const store_id = req.store_id
             const request = GetRequest<{}>(req.query)
             const { data, count } = await this.usecase.Fetch(request, store_id)
 
