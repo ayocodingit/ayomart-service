@@ -97,10 +97,10 @@ class Usecase {
             )
         }
 
-        await this.validateName(body.name, body.store_id, id)
+        await this.validateName(body.name, result.store_id, id)
 
         this.deleteImage(result.images)
-        body.images = await this.upload(body.images, body.store_id)
+        body.images = await this.upload(body.images, result.store_id)
 
         return this.repository.Update(body, id)
     }

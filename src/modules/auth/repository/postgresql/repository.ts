@@ -54,7 +54,7 @@ class Repository {
             where: {
                 email,
             },
-            include: this.schema.store,
+            include: { model: this.schema.store, attributes: ['id', 'name'] },
         })
     }
     public async GetByVerication(id: string) {

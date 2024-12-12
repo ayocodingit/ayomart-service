@@ -22,7 +22,7 @@ class Handler {
                 images: req.files,
             })
             body.created_by = req.user.id
-            body.store_id = req.user.store.id
+            body.store_id = req.query.store_id ?? req.user.stores[0].id
 
             const result = await this.usecase.Store(body)
             this.logger.Info(statusCode[statusCode.CREATED], {
@@ -47,7 +47,7 @@ class Handler {
 
     public Fetch = async (req: any, res: Response, next: NextFunction) => {
         try {
-            const store_id = req.params.store_id ?? req.user.store.id
+            const store_id = req.query.store_id ?? req.user.stores[0].id
             const request = GetRequest<{}>(req.query)
             const { data, count } = await this.usecase.Fetch(request, store_id)
 
@@ -80,8 +80,6 @@ class Handler {
                 ...req.body,
                 images: req.files,
             })
-            body.created_by = req.user.id
-            body.store_id = req.user.store.id
 
             await this.usecase.Update(body, req.params.id)
             this.logger.Info(statusCode[statusCode.OK], {
@@ -118,7 +116,7 @@ class Handler {
         next: NextFunction
     ) => {
         try {
-            const data = await this.usecase.GetCategories(req.user.store.id)
+            const data = await this.usecase.GetCategories(req.user.stores[0].id)
             this.logger.Info(statusCode[statusCode.OK], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),
             })

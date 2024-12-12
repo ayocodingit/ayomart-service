@@ -24,8 +24,9 @@ class Handler {
                 proof_of_payment: req.files,
             })
 
+            body.store_id = req.query.query ?? req.user.stores[0].id
+
             if (req.user) {
-                body.store_id = req.user.store.id
                 body.received_by = req.user.id
                 body.status = status.RECEIVED
             }
@@ -56,7 +57,7 @@ class Handler {
             const request = GetRequest<Fetch>(req.query)
             const { data, count } = await this.usecase.Fetch(
                 request,
-                req.user.store.id
+                req.query.query ?? req.user.stores[0].id
             )
             this.logger.Info(statusCode[statusCode.OK], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),
@@ -92,7 +93,7 @@ class Handler {
                 proof_of_payment: req.files,
             })
             body.received_by = req.user.id
-            body.store_id = req.user.store.id
+            body.store_id = req.query.query ?? req.user.stores[0].id
 
             if (body.status === status.RECEIVED)
                 body.pickup_time_at = new Date()

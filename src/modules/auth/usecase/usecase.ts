@@ -83,21 +83,13 @@ class Usecase {
             )
         }
 
-        let store
-        if (user.role === role.SELLER) {
-            store = {
-                id: user.store.id,
-                name: user.store.name,
-            }
-        }
-
         const access_token = this.jwt.Sign(
             {
                 id: user.id,
                 email: user.email,
                 username: user.username,
                 role: user.role,
-                store,
+                stores: user.stores,
             },
             {
                 expiresIn: '4h',
