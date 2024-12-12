@@ -15,6 +15,7 @@ const config: Config = {
         },
         log: env.APP_LOG,
         prefix: env.APP_PREFIX,
+        url: env.APP_URL,
     },
     file: {
         max: Number(env.FILE_MAX) * 1024 * 1024, // MB
@@ -47,6 +48,10 @@ const config: Config = {
         endpoint: env.MINIO_ENDPOINT,
         port: env.MINIO_PORT,
         bucket: env.MINIO_BUCKET,
+    },
+    telegram: {
+        url: env.TELEGRAM_URL,
+        chat_id: env.TELEGRAM_CHAT_ID,
     },
 }
 

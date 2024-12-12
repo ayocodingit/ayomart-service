@@ -17,12 +17,15 @@ class Handler {
         try {
             const body = ValidateFormRequest(StoreSchema, req.body)
             const result = await this.usecase.Store(body)
-            this.logger.Info(statusCode[statusCode.OK], {
-                additional_info: this.http.AdditionalInfo(req, statusCode.OK),
+            this.logger.Info(statusCode[statusCode.CREATED], {
+                additional_info: this.http.AdditionalInfo(
+                    req,
+                    statusCode.CREATED
+                ),
             })
             return res
-                .status(statusCode.OK)
-                .json({ data: result, message: 'OK' })
+                .status(statusCode.CREATED)
+                .json({ data: result, message: 'CREATED' })
         } catch (error) {
             return next(error)
         }
@@ -57,6 +60,20 @@ class Handler {
                 data: {
                     ...req.user,
                 },
+            })
+        } catch (error) {
+            return next(error)
+        }
+    }
+
+    public Verify = async (req: any, res: Response, next: NextFunction) => {
+        try {
+            await this.usecase.Verify(req.params.id)
+            this.logger.Info(statusCode[statusCode.CREATED], {
+                additional_info: this.http.AdditionalInfo(req, statusCode.OK),
+            })
+            return res.status(statusCode.OK).json({
+                message: 'UPDATED',
             })
         } catch (error) {
             return next(error)

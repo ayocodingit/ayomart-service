@@ -80,9 +80,9 @@ class Repository {
         return this.schema.product.findAll({
             group: ['category'],
             where: {
-                store_id
+                store_id,
             },
-            attributes: ['category']
+            attributes: ['category'],
         })
     }
 }

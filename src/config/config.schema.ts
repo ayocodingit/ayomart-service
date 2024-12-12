@@ -10,10 +10,11 @@ export default Joi.object({
     APP_LOG: Joi.string()
         .valid('info', 'error', 'warn', 'debug')
         .default('info'),
+    APP_URL: Joi.string().uri().optional(),
 
     FILE_MAX: Joi.number().optional().default(2), // MB
     FILE_URI: Joi.string().uri().optional(),
-    FILE_TYPE: Joi.array().default(['image/jpeg', 'image/png']),
+    FILE_TYPE: Joi.array().default(['image/jpeg', 'image/png', 'image/webp']),
 
     DB_CONNECTION: Joi.string()
         .valid('mysql', 'postgres')
@@ -38,4 +39,7 @@ export default Joi.object({
     MINIO_SECRET_KEY: Joi.string().optional(),
     MINIO_BUCKET: Joi.string().optional(),
     MINIO_PORT: Joi.number().optional().default(9000),
+
+    TELEGRAM_URL: Joi.string().uri().optional(),
+    TELEGRAM_CHAT_ID: Joi.string().optional(),
 })

@@ -9,6 +9,7 @@ import Sequelize from '../../database/sequelize/sequelize'
 import { RequestHandler } from 'express'
 import Jwt from '../../pkg/jwt'
 import { VerifyAuth } from '../../transport/http/middleware/verifyAuth'
+import Telegram from '../../external/telegram'
 
 class Auth {
     public usecase: Usecase
@@ -21,7 +22,8 @@ class Auth {
         const schema = Sequelize.Models(connection)
         const repository = new Repository(logger, schema)
         const jwt = new Jwt(config.jwt.access_key)
-        this.usecase = new Usecase(logger, repository, jwt)
+        const telegram = new Telegram(this.config)
+        this.usecase = new Usecase(logger, repository, jwt, telegram)
     }
 
     public RunHttp(http: Http) {
@@ -37,6 +39,7 @@ class Auth {
 
         Router.post('/signup', handler.Store as RequestHandler)
         Router.post('/login', handler.Login as RequestHandler)
+        Router.post('/verify/:id', handler.Verify as RequestHandler)
         Router.get('/me', auth, handler.Me as RequestHandler)
 
         http.SetRouter('/v1/auth/', Router)

@@ -7,6 +7,7 @@ export type Config = {
         }
         log: string
         prefix: string
+        url: string
     }
     file: {
         max: number
@@ -39,5 +40,9 @@ export type Config = {
         secret_key: string
         bucket: string
         port: number
+    }
+    telegram: {
+        url: string
+        chat_id: string
     }
 }

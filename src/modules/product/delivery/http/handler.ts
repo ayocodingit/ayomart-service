@@ -112,7 +112,11 @@ class Handler {
         }
     }
 
-    public GetCategories = async (req: any, res: Response, next: NextFunction) => {
+    public GetCategories = async (
+        req: any,
+        res: Response,
+        next: NextFunction
+    ) => {
         try {
             const data = await this.usecase.GetCategories(req.user.store.id)
             this.logger.Info(statusCode[statusCode.OK], {

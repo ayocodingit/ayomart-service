@@ -1,4 +1,6 @@
 import { role, status } from '../../../database/constant/user'
+import { ACTION } from '../../../database/constant/verification'
+import Telegram from '../../../external/telegram'
 import { Translate } from '../../../helpers/translate'
 import { generatePassword, isMatchPassword } from '../../../pkg/bcrypt'
 import error from '../../../pkg/error'
@@ -12,7 +14,8 @@ class Usecase {
     constructor(
         private logger: Logger,
         private repository: Repository,
-        private jwt: Jwt
+        private jwt: Jwt,
+        private telegram: Telegram
     ) {}
 
     public async Store(body: Store) {
@@ -23,22 +26,35 @@ class Usecase {
             const email = await this.repository.GetByEmail(body.email)
             if (email)
                 throw new error(
-                    statusCode.UNPROCESSABLE_ENTITY,
-                    JSON.stringify({
-                        email: Translate('exists', {
-                            attribute: 'email',
-                        }),
-                    }),
-                    true
+                    statusCode.BAD_REQUEST,
+                    Translate('exists', {
+                        attribute: 'email',
+                    })
                 )
 
             const user = await this.repository.CreateUser(body, t)
             body.created_by = user.id
 
             await this.repository.CreateStore(body, t)
+            const verification = await this.repository.CreateVerification(
+                body.email,
+                t
+            )
+            const path = 'auth/verify/' + verification.id
+
+            const message = this.telegram.Template({
+                ...verification.dataValues,
+                action: ACTION.SIGNUP,
+                email: body.email,
+                path,
+            })
+
+            await this.telegram.SendMessage(message)
             await t.commit()
         } catch (error) {
             await t.rollback()
+            console.log(error)
+
             throw error
         }
     }
@@ -89,6 +105,21 @@ class Usecase {
         )
 
         return access_token
+    }
+
+    public async Verify(id: string) {
+        const user = await this.repository.GetByVerication(id)
+
+        if (!user) {
+            throw new error(
+                statusCode.NOT_FOUND,
+                statusCode[statusCode.NOT_FOUND]
+            )
+        }
+
+        this.repository.DeleteVerification(id)
+
+        return this.repository.UpdateStatus(user.email, status.VERIFIED)
     }
 }
 
