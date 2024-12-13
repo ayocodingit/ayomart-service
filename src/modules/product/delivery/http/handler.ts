@@ -7,6 +7,7 @@ import { ValidateFormRequest } from '../../../../helpers/validate'
 import { StoreSchema } from '../../entity/schema'
 import { unlinkSync } from 'fs'
 import { GetMeta, GetRequest } from '../../../../helpers/requestParams'
+import { Params } from '../../entity/interface'
 
 class Handler {
     constructor(
@@ -48,7 +49,7 @@ class Handler {
     public Fetch = async (req: any, res: Response, next: NextFunction) => {
         try {
             const store_id = req.store_id
-            const request = GetRequest<{}>(req.query)
+            const request = GetRequest<Params>(req.query)
             const { data, count } = await this.usecase.Fetch(request, store_id)
 
             this.logger.Info(statusCode[statusCode.OK], {

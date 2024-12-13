@@ -8,7 +8,7 @@ import Product from './models/product'
 import Order from './models/order'
 import Customer from './models/customer'
 import ProductOrder from './models/productOrder'
-import Verification from './models/verification'
+import Notification from './models/notification'
 
 class Sequalize {
     public static async Connect({ db }: Config, logger: Logger) {
@@ -47,7 +47,7 @@ class Sequalize {
         const order = Order(connection)
         const customer = Customer(connection)
         const productOrder = ProductOrder(connection)
-        const verification = Verification(connection)
+        const notification = Notification(connection)
 
         user.hasMany(store, {
             foreignKey: 'created_by',
@@ -66,7 +66,7 @@ class Sequalize {
             order,
             customer,
             productOrder,
-            verification,
+            notification,
             // Add other models if needed
             // ...
 

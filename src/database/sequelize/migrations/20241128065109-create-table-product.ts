@@ -34,11 +34,6 @@ module.exports = {
                     allowNull: false,
                     defaultValue: 0,
                 },
-                grosir_price: {
-                    type: DataTypes.DOUBLE,
-                    allowNull: false,
-                    defaultValue: 0,
-                },
                 stock: {
                     type: DataTypes.INTEGER,
                     allowNull: false,

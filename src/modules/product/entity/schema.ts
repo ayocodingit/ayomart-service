@@ -19,7 +19,6 @@ export const StoreSchema = Joi.object<Store>({
     unit: Joi.string().required(),
     category: Joi.string().required(),
     price: Joi.number().required(),
-    grosir_price: Joi.number().required(),
     stock: Joi.number().required(),
     discount: Joi.number().required(),
     description: Joi.string().allow('').default(''),

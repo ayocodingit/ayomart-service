@@ -9,7 +9,7 @@ export type Schema = {
     order: Model
     customer: Model
     productOrder: Model
-    verification: Model
+    notification: Model
     // Add other models if needed
     // ...
 

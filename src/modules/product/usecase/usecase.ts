@@ -3,7 +3,7 @@ import error from '../../../pkg/error'
 import Logger from '../../../pkg/logger'
 import Minio from '../../../pkg/minio'
 import statusCode from '../../../pkg/statusCode'
-import { File, Store } from '../entity/interface'
+import { File, Params, Store } from '../entity/interface'
 import Repository from '../repository/postgresql/repository'
 import { readFileSync } from 'fs'
 import Sharp from '../../../pkg/sharp'
@@ -61,7 +61,7 @@ class Usecase {
         return this.repository.Store(body)
     }
 
-    public async Fetch(request: RequestParams<{}>, store_id: string) {
+    public async Fetch(request: RequestParams<Params>, store_id: string) {
         const result = await this.repository.Fetch(request, store_id)
         return result
     }

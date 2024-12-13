@@ -1,5 +1,5 @@
 import Logger from '../../../../pkg/logger'
-import { Store } from '../../entity/interface'
+import { Params, Store } from '../../entity/interface'
 import { Schema } from '../../../../database/sequelize/interface'
 import { RequestParams } from '../../../../helpers/requestParams'
 import { Order } from 'sequelize'
@@ -28,14 +28,41 @@ class Repository {
         return this.schema.product.findByPk(id)
     }
 
-    public async Fetch(request: RequestParams<{}>, store_id: string) {
+    public async Fetch(request: RequestParams<Params>, store_id: string) {
         const where = { store_id }
         const order: Order = []
 
         if (request.keyword) {
             Object.assign(where, {
-                name: {
-                    [this.schema.Op.iLike]: `%${request.keyword}%`,
+                [this.schema.Op.and]: {
+                    name: {
+                        [this.schema.Op.iLike]: `%${request.keyword}%`,
+                    },
+                    code: {
+                        [this.schema.Op.iLike]: `%${request.keyword}%`,
+                    },
+                },
+            })
+        }
+
+        if (request.category) {
+            Object.assign(where, {
+                category: request.category,
+            })
+        }
+
+        if (request.is_available) {
+            Object.assign(where, {
+                stock: {
+                    [this.schema.Op.gt]: 0,
+                },
+            })
+        }
+
+        if (request.is_promo) {
+            Object.assign(where, {
+                discount: {
+                    [this.schema.Op.gt]: 0,
                 },
             })
         }

@@ -6,15 +6,11 @@ import { DataTypes, QueryInterface } from 'sequelize'
 module.exports = {
     async up(queryInterface: QueryInterface) {
         return queryInterface
-            .createTable('verifications', {
+            .createTable('notifications', {
                 id: {
                     type: DataTypes.UUID,
                     allowNull: false,
                     primaryKey: true,
-                },
-                email: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
                 },
                 action: {
                     type: DataTypes.STRING,
@@ -28,16 +24,31 @@ module.exports = {
                     type: DataTypes.DATE,
                     allowNull: false,
                 },
+                created_by: {
+                    type: DataTypes.UUID,
+                    allowNull: false,
+                },
+                store_id: {
+                    type: DataTypes.UUID,
+                    allowNull: false,
+                },
+                is_read: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                    defaultValue: false,
+                },
             })
             .then(() => {
-                return queryInterface.addIndex('verifications', [
-                    'email',
+                return queryInterface.addIndex('notifications', [
                     'action',
+                    'created_by',
+                    'store_id',
+                    'is_read'
                 ])
             })
     },
 
     async down(queryInterface: QueryInterface) {
-        return queryInterface.dropTable('verifications')
+        return queryInterface.dropTable('notifications')
     },
 }

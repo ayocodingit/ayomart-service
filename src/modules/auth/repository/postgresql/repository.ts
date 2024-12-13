@@ -2,23 +2,16 @@ import Logger from '../../../../pkg/logger'
 import { Store } from '../../entity/interface'
 import { Schema } from '../../../../database/sequelize/interface'
 import { Transaction } from 'sequelize'
-import { ACTION } from '../../../../database/constant/verification'
-import { addDaysToDate } from '../../../../helpers/date'
+import { ACTION } from '../../../../database/constant/notification'
+import { addMinutesToDate } from '../../../../helpers/date'
 
 class Repository {
     constructor(private logger: Logger, private schema: Schema) {}
 
     public async CreateUser(body: Store, t: Transaction) {
-        return this.schema.user.create(
-            {
-                username: body.username,
-                email: body.email,
-                password: body.password,
-            },
-            {
-                transaction: t,
-            }
-        )
+        return this.schema.user.create(body, {
+            transaction: t,
+        })
     }
 
     public async CreateStore(body: Store, t: Transaction) {
@@ -33,13 +26,18 @@ class Repository {
         )
     }
 
-    public async CreateVerification(email: string, t: Transaction) {
-        return this.schema.verification.create(
+    public async CreateVerification(
+        created_by: string,
+        store_id: string,
+        t: Transaction
+    ) {
+        return this.schema.notification.create(
             {
-                email,
+                created_by,
+                store_id,
                 action: ACTION.SIGNUP,
                 text: 'Verification Account',
-                expired_at: addDaysToDate(new Date(), 1),
+                expired_at: addMinutesToDate(new Date(), 30),
             },
             { transaction: t }
         )
@@ -58,30 +56,34 @@ class Repository {
         })
     }
     public async GetByVerication(id: string) {
-        return this.schema.verification.findOne({
+        return this.schema.notification.findOne({
             where: {
                 id,
                 expired_at: {
                     [this.schema.Op.gte]: new Date(),
                 },
+                is_read: false,
             },
         })
     }
 
-    public async DeleteVerification(id: string) {
-        return this.schema.verification.destroy({
-            where: { id },
-        })
+    public async UpdateIsReadNotification(id: string, is_read: boolean) {
+        return this.schema.notification.update(
+            { is_read, updated_at: new Date() },
+            {
+                where: { id },
+            }
+        )
     }
 
-    public async UpdateStatus(email: string, status: string) {
+    public async UpdateStatus(id: string, status: string) {
         return this.schema.user.update(
             {
                 status,
             },
             {
                 where: {
-                    email,
+                    id,
                 },
             }
         )

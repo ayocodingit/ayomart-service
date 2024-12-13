@@ -19,6 +19,10 @@ const User = (connection: Connection) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            phone_number: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,

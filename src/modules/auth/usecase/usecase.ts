@@ -1,5 +1,5 @@
 import { role, status } from '../../../database/constant/user'
-import { ACTION } from '../../../database/constant/verification'
+import { ACTION } from '../../../database/constant/notification'
 import Telegram from '../../../external/telegram'
 import { Translate } from '../../../helpers/translate'
 import { generatePassword, isMatchPassword } from '../../../pkg/bcrypt'
@@ -35,9 +35,10 @@ class Usecase {
             const user = await this.repository.CreateUser(body, t)
             body.created_by = user.id
 
-            await this.repository.CreateStore(body, t)
+            const store = await this.repository.CreateStore(body, t)
             const verification = await this.repository.CreateVerification(
-                body.email,
+                user.id,
+                store.id,
                 t
             )
             const path = 'auth/verify/' + verification.id
@@ -45,7 +46,8 @@ class Usecase {
             const message = this.telegram.Template({
                 ...verification.dataValues,
                 action: ACTION.SIGNUP,
-                email: body.email,
+                ...user.dataValues,
+                code: verification.id,
                 path,
             })
 
@@ -109,9 +111,9 @@ class Usecase {
             )
         }
 
-        this.repository.DeleteVerification(id)
+        this.repository.UpdateIsReadNotification(id, true)
 
-        return this.repository.UpdateStatus(user.email, status.VERIFIED)
+        return this.repository.UpdateStatus(user.id, status.VERIFIED)
     }
 }
 

@@ -1,18 +1,14 @@
 import { DataTypes } from 'sequelize'
 import { Connection } from '../interface'
 
-const Verification = (connection: Connection) => {
+const Notification = (connection: Connection) => {
     return connection.define(
-        'verifications',
+        'notifications',
         {
             id: {
                 primaryKey: true,
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
-            },
-            email: {
-                type: DataTypes.STRING,
-                allowNull: false,
             },
             action: {
                 type: DataTypes.STRING,
@@ -26,6 +22,19 @@ const Verification = (connection: Connection) => {
                 type: DataTypes.DATE,
                 allowNull: false,
             },
+            created_by: {
+                type: DataTypes.UUID,
+                allowNull: false,
+            },
+            store_id: {
+                type: DataTypes.UUID,
+                allowNull: false,
+            },
+            is_read: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
+            },
         },
         {
             timestamps: false,
@@ -33,4 +42,4 @@ const Verification = (connection: Connection) => {
     )
 }
 
-export default Verification
+export default Notification

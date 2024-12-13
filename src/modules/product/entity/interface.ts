@@ -21,3 +21,9 @@ export type Store = {
     store_id: string
     images: File[]
 }
+
+export type Params = {
+    category: string
+    is_available: boolean
+    is_promo: boolean
+}
