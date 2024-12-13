@@ -43,7 +43,7 @@ module.exports = {
                     'action',
                     'created_by',
                     'store_id',
-                    'is_read'
+                    'is_read',
                 ])
             })
     },

@@ -102,9 +102,9 @@ class Usecase {
     }
 
     public async Verify(id: string) {
-        const user = await this.repository.GetByVerication(id)
+        const notification = await this.repository.GetNotification(id)
 
-        if (!user) {
+        if (!notification) {
             throw new error(
                 statusCode.NOT_FOUND,
                 statusCode[statusCode.NOT_FOUND]
@@ -113,7 +113,10 @@ class Usecase {
 
         this.repository.UpdateIsReadNotification(id, true)
 
-        return this.repository.UpdateStatus(user.id, status.VERIFIED)
+        return this.repository.UpdateStatus(
+            notification.created_by,
+            status.VERIFIED
+        )
     }
 }
 

@@ -55,7 +55,7 @@ class Repository {
             include: { model: this.schema.store, attributes: ['id', 'name'] },
         })
     }
-    public async GetByVerication(id: string) {
+    public async GetNotification(id: string) {
         return this.schema.notification.findOne({
             where: {
                 id,
