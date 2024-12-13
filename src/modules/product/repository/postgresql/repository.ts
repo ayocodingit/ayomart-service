@@ -34,7 +34,7 @@ class Repository {
 
         if (request.keyword) {
             Object.assign(where, {
-                [this.schema.Op.and]: {
+                [this.schema.Op.or]: {
                     name: {
                         [this.schema.Op.iLike]: `%${request.keyword}%`,
                     },
