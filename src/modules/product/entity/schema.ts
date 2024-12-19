@@ -21,6 +21,7 @@ export const StoreSchema = Joi.object<Store>({
     price: Joi.number().required(),
     stock: Joi.number().required(),
     discount: Joi.number().required(),
+    is_active: Joi.boolean().required(),
     description: Joi.string().allow('').default(''),
     images: Joi.array().items(file).optional().default([]),
 })
