@@ -58,7 +58,6 @@ class Usecase {
             await t.commit()
         } catch (error) {
             await t.rollback()
-            console.log(error)
 
             throw error
         }

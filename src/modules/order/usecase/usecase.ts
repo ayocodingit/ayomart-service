@@ -78,9 +78,6 @@ class Usecase {
         try {
             const order = await this.repository.Store(body, productOrder, t)
 
-            console.log(order);
-            
-
             const products = await this.repository.StoreProduct(
                 productOrder,
                 order.id,
