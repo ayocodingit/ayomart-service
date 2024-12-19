@@ -3,7 +3,6 @@ import { Params, Store } from '../../entity/interface'
 import { Schema } from '../../../../database/sequelize/interface'
 import { RequestParams } from '../../../../helpers/requestParams'
 import { Order } from 'sequelize'
-import sequelize from 'sequelize'
 
 class Repository {
     constructor(private logger: Logger, private schema: Schema) {}
@@ -12,9 +11,9 @@ class Repository {
         return this.schema.product.create(body)
     }
 
-    public async GetByName(name: string, store_id: string, id?: string) {
+    public async GetByCode(code: string, store_id: string, id?: string) {
         const where = {
-            name,
+            code,
             store_id,
         }
 
@@ -56,6 +55,9 @@ class Repository {
                 stock: {
                     [this.schema.Op.gt]: 0,
                 },
+            })
+            Object.assign(where, {
+                is_active: true,
             })
         }
 

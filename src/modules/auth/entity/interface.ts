@@ -1,6 +1,5 @@
 export type Store = {
     username: string
-    email: string
     password: string
     phone_number: string
     store_name: string
@@ -8,6 +7,6 @@ export type Store = {
 }
 
 export type Login = {
-    email: string
+    phone_number: string
     password: string
 }

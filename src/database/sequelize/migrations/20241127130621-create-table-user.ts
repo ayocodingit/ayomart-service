@@ -18,10 +18,6 @@ module.exports = {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
-                email: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                },
                 phone_number: {
                     type: DataTypes.STRING,
                     allowNull: false,
@@ -33,7 +29,11 @@ module.exports = {
                 role: {
                     type: DataTypes.STRING,
                     allowNull: false,
-                    defaultValue: role.SELLER,
+                    defaultValue: role.OWNER,
+                },
+                store_id: {
+                    type: DataTypes.UUID,
+                    allowNull: true,
                 },
                 status: {
                     type: DataTypes.STRING,
@@ -50,7 +50,7 @@ module.exports = {
                 },
             })
             .then(() => {
-                return queryInterface.addIndex('users', ['email'])
+                return queryInterface.addIndex('users', ['phone_number'])
             })
     },
 

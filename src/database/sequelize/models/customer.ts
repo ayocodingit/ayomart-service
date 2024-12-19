@@ -3,7 +3,7 @@ import { Connection } from '../interface'
 
 const Customer = (connection: Connection) => {
     return connection.define(
-        'orders',
+        'customers',
         {
             id: {
                 primaryKey: true,
@@ -18,6 +18,11 @@ const Customer = (connection: Connection) => {
             phone_number: {
                 type: DataTypes.STRING,
                 allowNull: true,
+            },
+            debt: {
+                type: DataTypes.DOUBLE,
+                allowNull: false,
+                defaultValue: 0,
             },
             store_id: {
                 type: DataTypes.UUID,

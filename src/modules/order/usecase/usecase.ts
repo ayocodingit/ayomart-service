@@ -26,7 +26,7 @@ class Usecase {
                 80
             )
             Object.assign(image, meta)
-            image.path = `${store_id}/product/${image.filename}`
+            image.path = `${store_id}/order/${image.filename}`
             const uri = await this.minio.Upload(
                 image.path,
                 source,
@@ -41,15 +41,24 @@ class Usecase {
 
     public async Store(body: Store) {
         const store = await this.repository.GetStoreByID(body.store_id)
+
         if (!store) {
             throw new error(
-                statusCode.UNPROCESSABLE_ENTITY,
-                JSON.stringify({
-                    store_id: Translate('exists', {
-                        attribute: 'store_id',
-                    }),
-                }),
-                true
+                statusCode.BAD_REQUEST,
+                Translate('not_exists', {
+                    attribute: 'Toko',
+                })
+            )
+        }
+
+        const customer = await this.repository.GetCustomer(body.customer_id)
+
+        if (!customer) {
+            throw new error(
+                statusCode.BAD_REQUEST,
+                Translate('not_exists', {
+                    attribute: 'Konsumen',
+                })
             )
         }
 
@@ -69,11 +78,21 @@ class Usecase {
         try {
             const order = await this.repository.Store(body, productOrder, t)
 
+            console.log(order);
+            
+
             const products = await this.repository.StoreProduct(
                 productOrder,
                 order.id,
                 t
             )
+
+            if (body.customer_id && order.dataValues.change < 0)
+                this.repository.UpdateCustomerDebt(
+                    body.customer_id,
+                    order.dataValues.change,
+                    t
+                )
 
             await this.repository.SyncProducts(products, t)
             await t.commit()
@@ -105,7 +124,7 @@ class Usecase {
     public async ReceivedOrder(body: ReceivedOrder, code: string) {
         const result = await this.repository.GetByCode(code)
 
-        if (!result || result.status !== status.PENDING) {
+        if (!result || result?.status !== status.PENDING) {
             throw new error(
                 statusCode.NOT_FOUND,
                 statusCode[statusCode.NOT_FOUND]

@@ -29,14 +29,14 @@ class Repository {
     public async CreateVerification(
         created_by: string,
         store_id: string,
+        code: string,
         t: Transaction
     ) {
         return this.schema.notification.create(
             {
                 created_by,
                 store_id,
-                action: ACTION.SIGNUP,
-                text: 'Verification Account',
+                code,
                 expired_at: addMinutesToDate(new Date(), 30),
             },
             { transaction: t }
@@ -47,18 +47,22 @@ class Repository {
         return this.schema.connection.transaction()
     }
 
-    public async GetByEmail(email: string) {
+    public async GetByPhoneNumber(phone_number: string) {
         return this.schema.user.findOne({
             where: {
-                email,
+                phone_number,
             },
-            include: { model: this.schema.store, attributes: ['id', 'name'] },
+            include: {
+                model: this.schema.store,
+                attributes: ['id', 'name', 'tax', 'isTaxBorneCustomer'],
+            },
         })
     }
-    public async GetNotification(id: string) {
+
+    public async GetNotification(code: string) {
         return this.schema.notification.findOne({
             where: {
-                id,
+                code,
                 expired_at: {
                     [this.schema.Op.gte]: new Date(),
                 },
@@ -67,11 +71,11 @@ class Repository {
         })
     }
 
-    public async UpdateIsReadNotification(id: string, is_read: boolean) {
+    public async UpdateIsReadNotification(code: string, is_read: boolean) {
         return this.schema.notification.update(
             { is_read, updated_at: new Date() },
             {
-                where: { id },
+                where: { code },
             }
         )
     }

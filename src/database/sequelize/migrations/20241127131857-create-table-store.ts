@@ -40,6 +40,16 @@ module.exports = {
                     allowNull: false,
                     defaultValue: false,
                 },
+                balance: {
+                    type: DataTypes.DOUBLE,
+                    allowNull: false,
+                    defaultValue: 0,
+                },
+                debt: {
+                    type: DataTypes.DOUBLE,
+                    allowNull: false,
+                    defaultValue: 0,
+                },
                 created_by: {
                     type: DataTypes.UUID,
                     allowNull: false,

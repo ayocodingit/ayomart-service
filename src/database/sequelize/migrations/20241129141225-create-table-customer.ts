@@ -21,6 +21,11 @@ module.exports = {
                     type: DataTypes.STRING,
                     allowNull: true,
                 },
+                debt: {
+                    type: DataTypes.DOUBLE,
+                    allowNull: false,
+                    defaultValue: 0,
+                },
                 store_id: {
                     type: DataTypes.UUID,
                     allowNull: false,

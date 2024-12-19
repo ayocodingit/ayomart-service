@@ -24,7 +24,7 @@ const Order = (connection: Connection) => {
                 type: DataTypes.DOUBLE,
                 allowNull: false,
             },
-            change_money: {
+            change: {
                 type: DataTypes.DOUBLE,
                 allowNull: true,
             },

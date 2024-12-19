@@ -15,6 +15,8 @@ import { endOfDay, format, startOfDay } from 'date-fns'
 import { isValidDate } from '../../../../helpers/date'
 import error from '../../../../pkg/error'
 import statusCode from '../../../../pkg/statusCode'
+import generateCode from '../../../../helpers/generator'
+import voucher from '../../../../helpers/voucher'
 
 class Repository {
     constructor(private logger: Logger, private schema: Schema) {}
@@ -28,8 +30,8 @@ class Repository {
             {
                 ...body,
                 ...productProduct,
-                code: this.generateOrderNumber(),
-                change_money:
+                code: generateCode('order'),
+                change:
                     body.order_type == order_type.CASHIER
                         ? body.paid - productProduct.total
                         : 0,
@@ -38,6 +40,16 @@ class Repository {
                 transaction: t,
             }
         )
+    }
+
+    public async UpdateCustomerDebt(id: string, debt: number, t: Transaction) {
+        return this.schema.customer.increment('debt', {
+            by: -debt,
+            where: {
+                id,
+            },
+            transaction: t,
+        })
     }
 
     public async StoreProduct(
@@ -65,6 +77,10 @@ class Repository {
         return this.schema.store.findByPk(id, {
             attributes: ['id', 'tax', 'isTaxBorneCustomer'],
         })
+    }
+
+    public async GetCustomer(id: string) {
+        return this.schema.customer.findByPk(id)
     }
 
     public async GetByID(id: string) {
@@ -133,26 +149,6 @@ class Repository {
         }
     }
 
-    private generateOrderNumber(): string {
-        const now = new Date()
-        const formattedDate = format(now, 'yyMMdd-HHmm')
-        const prefix = 'ORD'
-
-        const randomString = Math.random()
-            .toString(36)
-            .substring(2, 6)
-            .toUpperCase()
-
-        const orderNumber = `${prefix}-${formattedDate}-${randomString}`
-
-        return orderNumber
-    }
-
-    private calculateDiscount = (price: number, discount: number) => {
-        const voucher = (price / 100) * discount
-        return voucher
-    }
-
     public async getProductOrder(
         items: StoreProduct[],
         store_id: string,
@@ -174,6 +170,7 @@ class Repository {
                 stock: {
                     [this.schema.Op.gt]: 0,
                 },
+                is_active: true,
                 store_id,
             },
             attributes: ['id', 'name', 'price', 'discount', 'unit', 'stock'],
@@ -190,10 +187,16 @@ class Repository {
         let total = 0
         let discount = 0
         for (const product of result) {
-            const item = items.filter((item) => item.id === product.id)[0]
+            const item = items.find((item) => item.id === product.id)
+            if (!item) {
+                throw new error(
+                    statusCode.BAD_REQUEST,
+                    'transaksi gagal karena terdapat produk yang tidak tersedia'
+                )
+            }
 
-            const voucher =
-                this.calculateDiscount(product.price, product.discount) *
+            const discounts =
+                voucher.calculateDiscount(product.price, product.discount) *
                 item.qty
 
             products.push({
@@ -202,15 +205,15 @@ class Repository {
                 unit: product.unit,
                 price: product.price,
                 discount: product.discount,
-                voucher: voucher,
+                voucher: discounts,
                 note: item.note,
                 qty: item.qty,
             })
 
             const amount = item.qty * product.price
 
-            discount += voucher
-            total += amount - voucher
+            discount += discounts
+            total += amount - discounts
 
             if (item.qty > product.stock) {
                 throw new error(

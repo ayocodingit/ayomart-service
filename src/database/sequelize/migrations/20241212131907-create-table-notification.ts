@@ -1,5 +1,6 @@
 'use strict'
 
+import sequelize from 'sequelize'
 import { DataTypes, QueryInterface } from 'sequelize'
 
 /** @type {import('sequelize-cli').Migration} */
@@ -12,17 +13,13 @@ module.exports = {
                     allowNull: false,
                     primaryKey: true,
                 },
-                action: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                },
-                text: {
+                code: {
                     type: DataTypes.STRING,
                     allowNull: false,
                 },
                 expired_at: {
                     type: DataTypes.DATE,
-                    allowNull: false,
+                    allowNull: true,
                 },
                 created_by: {
                     type: DataTypes.UUID,
@@ -37,13 +34,21 @@ module.exports = {
                     allowNull: false,
                     defaultValue: false,
                 },
+                created_at: {
+                    type: DataTypes.DATE,
+                    defaultValue: sequelize.fn('NOW'),
+                },
+                updated_at: {
+                    type: DataTypes.DATE,
+                    defaultValue: sequelize.fn('NOW'),
+                },
             })
             .then(() => {
                 return queryInterface.addIndex('notifications', [
-                    'action',
                     'created_by',
                     'store_id',
                     'is_read',
+                    'code',
                 ])
             })
     },

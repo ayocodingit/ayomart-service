@@ -38,25 +38,22 @@ class Usecase {
         return images
     }
 
-    private async validateName(name: string, store_id: string, id?: string) {
-        const product = await this.repository.GetByName(name, store_id, id)
+    private async validateCode(code: string, store_id: string, id?: string) {
+        const product = await this.repository.GetByCode(code, store_id, id)
 
         if (product)
             throw new error(
-                statusCode.UNPROCESSABLE_ENTITY,
-                JSON.stringify({
-                    name: Translate('exists', {
-                        attribute: 'name',
-                    }),
-                }),
-                true
+                statusCode.BAD_REQUEST,
+                Translate('exists', {
+                    attribute: 'Kode Produk',
+                })
             )
     }
 
     public async Store(body: Store) {
         body.images = await this.upload(body.images, body.store_id)
 
-        await this.validateName(body.name, body.store_id)
+        await this.validateCode(body.code, body.store_id)
 
         return this.repository.Store(body)
     }
@@ -97,7 +94,7 @@ class Usecase {
             )
         }
 
-        await this.validateName(body.name, result.store_id, id)
+        await this.validateCode(body.code, result.store_id, id)
 
         this.deleteImage(result.images)
         body.images = await this.upload(body.images, result.store_id)

@@ -1,6 +1,7 @@
 export const role = {
     SUPERADMIN: 'superadmin',
-    SELLER: 'seller',
+    EMPLOYEE: 'employee',
+    OWNER: 'owner',
 }
 
 export const status = {

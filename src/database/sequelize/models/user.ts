@@ -15,10 +15,6 @@ const User = (connection: Connection) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            email: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
             phone_number: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -30,7 +26,11 @@ const User = (connection: Connection) => {
             role: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                defaultValue: role.SELLER,
+                defaultValue: role.OWNER,
+            },
+            store_id: {
+                type: DataTypes.UUID,
+                allowNull: true,
             },
             status: {
                 type: DataTypes.STRING,

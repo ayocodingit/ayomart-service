@@ -1,6 +1,7 @@
 import config from './config/config'
 import Sequelize from './database/sequelize/sequelize'
 import Auth from './modules/auth/auth'
+import Customer from './modules/customer/customer'
 import Order from './modules/order/order'
 import Product from './modules/product/product'
 import Logger from './pkg/logger'
@@ -16,6 +17,7 @@ const Run = async () => {
     new Auth(logger, config, connection).RunHttp(http)
     new Product(logger, config, connection).RunHttp(http)
     new Order(logger, config, connection).RunHttp(http)
+    new Customer(logger, config, connection).RunHttp(http)
     // End Load Module
 
     http.Run(config.app.port.http)

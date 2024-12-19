@@ -10,17 +10,13 @@ const Notification = (connection: Connection) => {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
             },
-            action: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            text: {
+            code: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
             expired_at: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
             },
             created_by: {
                 type: DataTypes.UUID,
@@ -37,7 +33,9 @@ const Notification = (connection: Connection) => {
             },
         },
         {
-            timestamps: false,
+            timestamps: true,
+            createdAt: 'created_at',
+            updatedAt: 'updated_at',
         }
     )
 }

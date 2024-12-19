@@ -37,6 +37,11 @@ const Store = (connection: Connection) => {
                 allowNull: false,
                 defaultValue: false,
             },
+            balance: {
+                type: DataTypes.DOUBLE,
+                allowNull: false,
+                defaultValue: 0,
+            },
             created_by: {
                 type: DataTypes.UUID,
                 allowNull: false,

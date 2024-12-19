@@ -23,7 +23,7 @@ const products = Joi.array()
         Joi.object({
             id: Joi.string().required(),
             note: Joi.string().required().allow(''),
-            qty: Joi.number().min(1).required(),
+            qty: Joi.number().min(0.1).required(),
         })
     )
     .min(1)

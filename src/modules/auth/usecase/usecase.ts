@@ -9,6 +9,7 @@ import Logger from '../../../pkg/logger'
 import statusCode from '../../../pkg/statusCode'
 import { Login, Store } from '../entity/interface'
 import Repository from '../repository/postgresql/repository'
+import generateCode from '../../../helpers/generator'
 
 class Usecase {
     constructor(
@@ -21,16 +22,18 @@ class Usecase {
     public async Store(body: Store) {
         const t = await this.repository.GetTransaction()
         try {
-            body.password = await generatePassword(body.password, 10)
-
-            const email = await this.repository.GetByEmail(body.email)
-            if (email)
+            const exist = await this.repository.GetByPhoneNumber(
+                body.phone_number
+            )
+            if (exist)
                 throw new error(
                     statusCode.BAD_REQUEST,
                     Translate('exists', {
-                        attribute: 'email',
+                        attribute: 'nomor hp',
                     })
                 )
+
+            body.password = await generatePassword(body.password, 10)
 
             const user = await this.repository.CreateUser(body, t)
             body.created_by = user.id
@@ -39,15 +42,15 @@ class Usecase {
             const verification = await this.repository.CreateVerification(
                 user.id,
                 store.id,
+                generateCode('verification'),
                 t
             )
-            const path = 'auth/verify/' + verification.id
+            const path = 'auth/verify/' + verification.code
 
             const message = this.telegram.Template({
                 ...verification.dataValues,
                 action: ACTION.SIGNUP,
                 ...user.dataValues,
-                code: verification.id,
                 path,
             })
 
@@ -62,19 +65,19 @@ class Usecase {
     }
 
     public async Login(body: Login) {
-        const user = await this.repository.GetByEmail(body.email)
+        const user = await this.repository.GetByPhoneNumber(body.phone_number)
 
         if (!user) {
             throw new error(
                 statusCode.UNAUTHORIZED,
-                'email atau kata sandi salah'
+                'nomor hp atau kata sandi salah'
             )
         }
 
         if (!(await isMatchPassword(body.password, user.password))) {
             throw new error(
                 statusCode.UNAUTHORIZED,
-                'email atau kata sandi salah'
+                'nomor hp atau kata sandi salah'
             )
         }
 
@@ -85,18 +88,23 @@ class Usecase {
             )
         }
 
-        const access_token = this.jwt.Sign(
-            {
-                id: user.id,
-                email: user.email,
-                username: user.username,
-                role: user.role,
-                stores: user.stores,
-            },
-            {
-                expiresIn: '4h',
-            }
-        )
+        const payload = {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+            stores: user.stores,
+        }
+
+        if (user.role === role.EMPLOYEE && user.store_id) {
+            Object.assign(payload, {
+                store_id: user.store_id,
+            })
+        }
+
+        const access_token = this.jwt.Sign(payload, {
+            expiresIn: '4h',
+        })
 
         return access_token
     }

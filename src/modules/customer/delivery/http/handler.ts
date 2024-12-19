@@ -4,11 +4,9 @@ import Usecase from '../../usecase/usecase'
 import { NextFunction, Response } from 'express'
 import statusCode from '../../../../pkg/statusCode'
 import { ValidateFormRequest } from '../../../../helpers/validate'
-import { ReceivedSchema, StoreSchema } from '../../entity/schema'
+import { StoreSchema } from '../../entity/schema'
 import { unlinkSync } from 'fs'
 import { GetMeta, GetRequest } from '../../../../helpers/requestParams'
-import { Fetch } from '../../entity/interface'
-import { status } from '../../../../database/constant/order'
 
 class Handler {
     constructor(
@@ -21,14 +19,8 @@ class Handler {
         try {
             const body = ValidateFormRequest(StoreSchema, {
                 ...req.body,
-                proof_of_payment: req.files,
             })
-            if (!body.store_id) body.store_id = req.store_id
-
-            if (req.user) {
-                body.received_by = req.user.id
-                body.status = status.RECEIVED
-            }
+            body.store_id = req.store_id
 
             const result = await this.usecase.Store(body)
             this.logger.Info(statusCode[statusCode.CREATED], {
@@ -42,22 +34,15 @@ class Handler {
                 .json({ data: result, message: 'CREATED' })
         } catch (error) {
             return next(error)
-        } finally {
-            if (req.files) {
-                req.files.map((file: any) => {
-                    unlinkSync(this.http.dest + '/' + file.filename)
-                })
-            }
         }
     }
 
     public Fetch = async (req: any, res: Response, next: NextFunction) => {
         try {
-            const request = GetRequest<Fetch>(req.query)
-            const { data, count } = await this.usecase.Fetch(
-                request,
-                req.store_id
-            )
+            const store_id = req.store_id
+            const request = GetRequest<{}>(req.query)
+            const { data, count } = await this.usecase.Fetch(request, store_id)
+
             this.logger.Info(statusCode[statusCode.OK], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),
             })
@@ -81,36 +66,32 @@ class Handler {
         }
     }
 
-    public ReceivedOrder = async (
-        req: any,
-        res: Response,
-        next: NextFunction
-    ) => {
+    public Update = async (req: any, res: Response, next: NextFunction) => {
         try {
-            const body = ValidateFormRequest(ReceivedSchema, {
+            const body = ValidateFormRequest(StoreSchema, {
                 ...req.body,
-                proof_of_payment: req.files,
             })
-            body.received_by = req.user.id
-            body.store_id = req.store_id
 
-            if (body.status === status.RECEIVED)
-                body.pickup_time_at = new Date()
+            await this.usecase.Update(body, req.params.id)
+            this.logger.Info(statusCode[statusCode.OK], {
+                additional_info: this.http.AdditionalInfo(req, statusCode.OK),
+            })
+            return res.status(statusCode.OK).json({ message: 'UPDATED' })
+        } catch (error) {
+            return next(error)
+        }
+    }
 
-            await this.usecase.ReceivedOrder(body, req.params.code)
+    public Destroy = async (req: any, res: Response, next: NextFunction) => {
+        try {
+            const data = await this.usecase.Destroy(req.params.id)
             this.logger.Info(statusCode[statusCode.OK], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),
             })
 
-            return res.json({ message: 'UPDATED' })
+            return res.json({ data })
         } catch (error) {
             return next(error)
-        } finally {
-            if (req.files) {
-                req.files.map((file: any) => {
-                    unlinkSync(this.http.dest + '/' + file.filename)
-                })
-            }
         }
     }
 }
