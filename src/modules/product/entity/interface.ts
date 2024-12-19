@@ -18,6 +18,7 @@ export type Store = {
     discount: number
     description: string
     created_by: string
+    is_active: boolean
     store_id: string
     images: File[]
 }
