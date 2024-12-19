@@ -52,6 +52,16 @@ class Repository {
         })
     }
 
+    public async UpdateStoreBalance(id: string, total: number, t: Transaction) {
+        return this.schema.store.increment('balance', {
+            by: total,
+            where: {
+                id,
+            },
+            transaction: t,
+        })
+    }
+
     public async StoreProduct(
         body: ProductOrder,
         order_id: string,

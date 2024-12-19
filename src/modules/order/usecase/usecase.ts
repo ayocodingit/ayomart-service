@@ -85,11 +85,17 @@ class Usecase {
             )
 
             if (body.customer_id && order.dataValues.change < 0)
-                this.repository.UpdateCustomerDebt(
+                await this.repository.UpdateCustomerDebt(
                     body.customer_id,
                     order.dataValues.change,
                     t
                 )
+
+            await this.repository.UpdateStoreBalance(
+                body.store_id,
+                order.total,
+                t
+            )
 
             await this.repository.SyncProducts(products, t)
             await t.commit()
