@@ -47,7 +47,10 @@ export type User = {
         id: string
         name: string
     }>
-    store_id: string
+    store: {
+        id: string
+        name: string
+    }
     iat: number
     exp: number
 }
