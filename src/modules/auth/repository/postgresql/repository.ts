@@ -18,7 +18,7 @@ class Repository {
         return this.schema.store.create(
             {
                 name: body.store_name,
-                created_by: body.created_by,
+                code: body.code,
             },
             {
                 transaction: t,
@@ -26,7 +26,7 @@ class Repository {
         )
     }
 
-    public async CreateVerification(
+    public async CreateNotification(
         created_by: string,
         store_id: string,
         code: string,

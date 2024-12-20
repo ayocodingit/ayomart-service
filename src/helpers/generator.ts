@@ -5,7 +5,7 @@
  * @returns A unique code string.
  */
 function generateCode(
-    type: 'verification' | 'password_reset' | 'invoice' | 'order',
+    type: 'verification' | 'password_reset' | 'invoice' | 'order' | 'store',
     length: number = 6
 ): string {
     const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -33,6 +33,9 @@ function generateCode(
             break
         case 'order':
             prefix = 'ORD'
+            break
+        case 'store':
+            prefix = 'STORE'
             break
         default:
             throw new Error(`Invalid type: ${type}`)

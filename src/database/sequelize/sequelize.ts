@@ -50,7 +50,8 @@ class Sequalize {
         const notification = Notification(connection)
 
         user.hasMany(store, {
-            foreignKey: 'created_by',
+            foreignKey: 'code',
+            sourceKey: 'code',
         })
 
         order.hasMany(productOrder, {

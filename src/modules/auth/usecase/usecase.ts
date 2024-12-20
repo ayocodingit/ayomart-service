@@ -34,23 +34,23 @@ class Usecase {
                 )
 
             body.password = await generatePassword(body.password, 10)
+            body.code = generateCode('store')
 
             const user = await this.repository.CreateUser(body, t)
-            body.created_by = user.id
 
             const store = await this.repository.CreateStore(body, t)
-            const verification = await this.repository.CreateVerification(
+            const notification = await this.repository.CreateNotification(
                 user.id,
                 store.id,
                 generateCode('verification'),
                 t
             )
-            const path = 'auth/verify/' + verification.code
+            const path = 'auth/verify/' + notification.code
 
             const message = this.telegram.Template({
-                ...verification.dataValues,
                 action: ACTION.SIGNUP,
                 ...user.dataValues,
+                ...notification.dataValues,
                 path,
             })
 
@@ -97,19 +97,22 @@ class Usecase {
 
         if (user.role === role.EMPLOYEE && user.store_id) {
             Object.assign(payload, {
-                store_id: user.store_id,
+                store: user.stores.find((store: any) => store.id === user.store_id),
             })
         }
 
-        if (user.role === role.OWNER && user.stores.include(body.store_id)) {
+        if (
+            user.role === role.OWNER &&
+            user.stores.find((store: any) => store.id === body.store_id)
+        ) {
             Object.assign(payload, {
-                store_id: body.store_id,
+                store: user.stores.find((store: any) => store.id === body.store_id),
             })
-        }
-
+        }  
+        
         if (user.role === role.OWNER && user.stores.length === 1) {
             Object.assign(payload, {
-                store_id: user.stores[0],
+                store: user.stores[0],
             })
         }
 

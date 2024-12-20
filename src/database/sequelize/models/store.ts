@@ -10,6 +10,10 @@ const Store = (connection: Connection) => {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
             },
+            code: {
+                type: DataTypes.UUID,
+                allowNull: false,
+            },
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -41,10 +45,6 @@ const Store = (connection: Connection) => {
                 type: DataTypes.DOUBLE,
                 allowNull: false,
                 defaultValue: 0,
-            },
-            created_by: {
-                type: DataTypes.UUID,
-                allowNull: false,
             },
         },
         {

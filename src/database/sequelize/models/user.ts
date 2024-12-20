@@ -11,6 +11,10 @@ const User = (connection: Connection) => {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
             },
+            code: {
+                type: DataTypes.UUID,
+                allowNull: false,
+            },
             username: {
                 type: DataTypes.STRING,
                 allowNull: false,

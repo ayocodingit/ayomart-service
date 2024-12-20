@@ -50,8 +50,8 @@ module.exports = {
                     allowNull: false,
                     defaultValue: 0,
                 },
-                created_by: {
-                    type: DataTypes.UUID,
+                code: {
+                    type: DataTypes.STRING,
                     allowNull: false,
                 },
                 created_at: {
@@ -64,7 +64,7 @@ module.exports = {
                 },
             })
             .then(() => {
-                return queryInterface.addIndex('stores', ['name', 'created_by'])
+                return queryInterface.addIndex('stores', ['name', 'code'])
             })
     },
 

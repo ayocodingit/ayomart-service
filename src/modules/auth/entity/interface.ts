@@ -3,7 +3,7 @@ export type Store = {
     password: string
     phone_number: string
     store_name: string
-    created_by: string
+    code: string
 }
 
 export type Login = {

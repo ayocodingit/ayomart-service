@@ -14,6 +14,10 @@ module.exports = {
                     type: DataTypes.UUID,
                     allowNull: false,
                 },
+                code: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
                 username: {
                     type: DataTypes.STRING,
                     allowNull: false,
@@ -50,7 +54,10 @@ module.exports = {
                 },
             })
             .then(() => {
-                return queryInterface.addIndex('users', ['phone_number'])
+                return queryInterface.addIndex('users', [
+                    'phone_number',
+                    'code',
+                ])
             })
     },
 
