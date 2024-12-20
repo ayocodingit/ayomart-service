@@ -33,15 +33,7 @@ export const VerifyAuth = (jwt: Jwt) => {
 
         req['user'] = user
 
-        if (!store_id && user.role === role.OWNER) {
-            store_id = user.stores[0]?.id
-        }
-
-        if (!store_id && user.role === role.EMPLOYEE && user.store_id) {
-            store_id = user.store_id
-        }
-
-        req['store_id'] = store_id
+        req['store_id'] = user.store.id
         return next()
     }
 }
