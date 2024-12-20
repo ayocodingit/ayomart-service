@@ -97,7 +97,9 @@ class Usecase {
 
         if (user.role === role.EMPLOYEE && user.store_id) {
             Object.assign(payload, {
-                store: user.stores.find((store: any) => store.id === user.store_id),
+                store: user.stores.find(
+                    (store: any) => store.id === user.store_id
+                ),
             })
         }
 
@@ -106,10 +108,12 @@ class Usecase {
             user.stores.find((store: any) => store.id === body.store_id)
         ) {
             Object.assign(payload, {
-                store: user.stores.find((store: any) => store.id === body.store_id),
+                store: user.stores.find(
+                    (store: any) => store.id === body.store_id
+                ),
             })
-        }  
-        
+        }
+
         if (user.role === role.OWNER && user.stores.length === 1) {
             Object.assign(payload, {
                 store: user.stores[0],
