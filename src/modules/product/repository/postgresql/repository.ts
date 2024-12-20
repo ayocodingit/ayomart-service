@@ -3,6 +3,7 @@ import { Params, Store } from '../../entity/interface'
 import { Schema } from '../../../../database/sequelize/interface'
 import { RequestParams } from '../../../../helpers/requestParams'
 import { Order } from 'sequelize'
+import sequelize from 'sequelize'
 
 class Repository {
     constructor(private logger: Logger, private schema: Schema) {}
@@ -111,7 +112,10 @@ class Repository {
             where: {
                 store_id,
             },
-            attributes: ['category'],
+            attributes: [
+                'category',
+                [sequelize.fn('COUNT', 'category'), 'total'],
+            ],
         })
     }
 }

@@ -117,7 +117,7 @@ class Handler {
         next: NextFunction
     ) => {
         try {
-            const data = await this.usecase.GetCategories(req.user.stores[0].id)
+            const data = await this.usecase.GetCategories(req.store_id)
             this.logger.Info(statusCode[statusCode.OK], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),
             })
