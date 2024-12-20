@@ -13,4 +13,5 @@ export const StoreSchema = Joi.object<Store>({
 export const LoginSchema = Joi.object<Login>({
     phone_number: Joi.string().required(),
     password: Joi.string().required(),
+    store_id: Joi.string().optional(),
 })

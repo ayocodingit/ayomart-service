@@ -9,4 +9,5 @@ export type Store = {
 export type Login = {
     phone_number: string
     password: string
+    store_id: string
 }

@@ -101,6 +101,12 @@ class Usecase {
             })
         }
 
+        if (user.role === role.OWNER && user.stores.include(body.store_id)) {
+            Object.assign(payload, {
+                store_id: body.store_id,
+            })
+        }
+
         const access_token = this.jwt.Sign(payload, {
             expiresIn: '4h',
         })
