@@ -51,15 +51,17 @@ class Usecase {
             )
         }
 
-        const customer = await this.repository.GetCustomer(body.customer_id)
+        if (body.customer_id) {
+            const customer = await this.repository.GetCustomer(body.customer_id)
 
-        if (!customer) {
-            throw new error(
-                statusCode.BAD_REQUEST,
-                Translate('not_exists', {
-                    attribute: 'Konsumen',
-                })
-            )
+            if (!customer) {
+                throw new error(
+                    statusCode.BAD_REQUEST,
+                    Translate('not_exists', {
+                        attribute: 'Konsumen',
+                    })
+                )
+            }
         }
 
         const productOrder = await this.repository.getProductOrder(
