@@ -12,7 +12,7 @@ export default Joi.object({
         .default('info'),
     APP_URL: Joi.string().uri().optional(),
 
-    FILE_MAX: Joi.number().optional().default(2), // MB
+    FILE_MAX: Joi.number().optional().default(10), // MB
     FILE_URI: Joi.string().uri().optional(),
     FILE_TYPE: Joi.array().default(['image/jpeg', 'image/png', 'image/webp']),
 
