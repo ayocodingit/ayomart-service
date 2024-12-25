@@ -145,12 +145,16 @@ class Repository {
             order.push(['created_at', 'desc'])
         }
 
-        const { count, rows } = await this.schema.order.findAndCountAll({
+        const rows = await this.schema.order.findAll({
             limit: request.per_page,
             offset: request.offset,
             where,
             order,
             include: this.schema.productOrder,
+        })
+
+        const count = await this.schema.order.count({
+            where,
         })
 
         return {
