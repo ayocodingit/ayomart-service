@@ -54,7 +54,14 @@ class Repository {
             },
             include: {
                 model: this.schema.store,
-                attributes: ['id', 'name', 'tax', 'isTaxBorneCustomer', 'address', 'logo'],
+                attributes: [
+                    'id',
+                    'name',
+                    'tax',
+                    'isTaxBorneCustomer',
+                    'address',
+                    'logo',
+                ],
             },
         })
     }
