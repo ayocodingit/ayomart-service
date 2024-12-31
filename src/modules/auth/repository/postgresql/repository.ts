@@ -37,7 +37,7 @@ class Repository {
                 created_by,
                 store_id,
                 code,
-                expired_at: addMinutesToDate(new Date(), 30),
+                expired_at: addMinutesToDate(new Date(), 120),
             },
             { transaction: t }
         )
