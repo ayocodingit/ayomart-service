@@ -11,3 +11,11 @@ export type Login = {
     password: string
     store_id: string
 }
+
+export type ForgotPassword = {
+    phone_number: string
+}
+
+export type CreateNewPassword = {
+    password: string
+}

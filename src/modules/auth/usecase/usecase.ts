@@ -7,7 +7,7 @@ import error from '../../../pkg/error'
 import Jwt from '../../../pkg/jwt'
 import Logger from '../../../pkg/logger'
 import statusCode from '../../../pkg/statusCode'
-import { Login, Store } from '../entity/interface'
+import { ForgotPassword, Login, Store } from '../entity/interface'
 import Repository from '../repository/postgresql/repository'
 import generateCode from '../../../helpers/generator'
 
@@ -126,9 +126,34 @@ class Usecase {
 
         return access_token
     }
+    public async ForgotPassword(body: ForgotPassword) {
+        const user = await this.repository.GetByPhoneNumber(body.phone_number)
 
-    public async Verify(id: string) {
-        const notification = await this.repository.GetNotification(id)
+        if (!user) {
+            throw new error(statusCode.NOT_FOUND, 'nomor hp tidak ditemukan')
+        }
+
+        const notification = await this.repository.CreateNotification(
+            user.id,
+            null,
+            generateCode('password_reset')
+        )
+        const path = 'auth/create-new-password/' + notification.code
+
+        const message = this.telegram.Template({
+            action: ACTION.FORGOT_PASSWORD,
+            ...user.dataValues,
+            ...notification.dataValues,
+            path,
+        })
+
+        await this.telegram.SendMessage(message)
+
+        return notification
+    }
+
+    public async Verify(code: string) {
+        const notification = await this.repository.GetNotification(code)
 
         if (!notification) {
             throw new error(
@@ -137,12 +162,29 @@ class Usecase {
             )
         }
 
-        this.repository.UpdateIsReadNotification(id, true)
+        this.repository.UpdateIsReadNotification(code, true)
 
         return this.repository.UpdateStatus(
             notification.created_by,
             status.VERIFIED
         )
+    }
+
+    public async CreateNewPassword(code: string, password: string) {
+        const notification = await this.repository.GetNotification(code)
+
+        if (!notification) {
+            throw new error(
+                statusCode.NOT_FOUND,
+                statusCode[statusCode.NOT_FOUND]
+            )
+        }
+
+        this.repository.UpdateIsReadNotification(code, true)
+
+        password = await generatePassword(password, 10)
+
+        return this.repository.UpdatePassword(notification.created_by, password)
     }
 }
 

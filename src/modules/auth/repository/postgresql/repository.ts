@@ -28,9 +28,9 @@ class Repository {
 
     public async CreateNotification(
         created_by: string,
-        store_id: string,
+        store_id: string | null,
         code: string,
-        t: Transaction
+        t?: Transaction
     ) {
         return this.schema.notification.create(
             {
@@ -91,6 +91,19 @@ class Repository {
         return this.schema.user.update(
             {
                 status,
+            },
+            {
+                where: {
+                    id,
+                },
+            }
+        )
+    }
+
+    public async UpdatePassword(id: string, password: string) {
+        return this.schema.user.update(
+            {
+                password,
             },
             {
                 where: {

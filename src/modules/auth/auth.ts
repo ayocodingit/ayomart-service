@@ -39,6 +39,14 @@ class Auth {
 
         Router.post('/signup', handler.Store as RequestHandler)
         Router.post('/login', handler.Login as RequestHandler)
+        Router.post(
+            '/forgot-password',
+            handler.ForgotPassword as RequestHandler
+        )
+        Router.patch(
+            '/create-new-password/:code',
+            handler.CreateNewPassword as RequestHandler
+        )
         Router.post('/verify/:id', handler.Verify as RequestHandler)
         Router.get('/me', auth, handler.Me as RequestHandler)
 

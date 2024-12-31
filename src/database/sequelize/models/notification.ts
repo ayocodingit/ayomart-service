@@ -24,7 +24,7 @@ const Notification = (connection: Connection) => {
             },
             store_id: {
                 type: DataTypes.UUID,
-                allowNull: false,
+                allowNull: true,
             },
             is_read: {
                 type: DataTypes.BOOLEAN,
