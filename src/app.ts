@@ -4,6 +4,7 @@ import Auth from './modules/auth/auth'
 import Customer from './modules/customer/customer'
 import Order from './modules/order/order'
 import Product from './modules/product/product'
+import Store from './modules/store/store'
 import Logger from './pkg/logger'
 import Http from './transport/http/http'
 
@@ -18,6 +19,7 @@ const Run = async () => {
     new Product(logger, config, connection).RunHttp(http)
     new Order(logger, config, connection).RunHttp(http)
     new Customer(logger, config, connection).RunHttp(http)
+    new Store(logger, config, connection).RunHttp(http)
     // End Load Module
 
     http.Run(config.app.port.http)
