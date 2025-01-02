@@ -2,7 +2,6 @@ import Logger from '../../../../pkg/logger'
 import { Store } from '../../entity/interface'
 import { Schema } from '../../../../database/sequelize/interface'
 import { Transaction } from 'sequelize'
-import { ACTION } from '../../../../database/constant/notification'
 import { addMinutesToDate } from '../../../../helpers/date'
 
 class Repository {
@@ -54,14 +53,7 @@ class Repository {
             },
             include: {
                 model: this.schema.store,
-                attributes: [
-                    'id',
-                    'name',
-                    'tax',
-                    'isTaxBorneCustomer',
-                    'address',
-                    'logo',
-                ],
+                attributes: ['id', 'name', 'tax', 'isTaxBorneCustomer'],
             },
         })
     }

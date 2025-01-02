@@ -95,7 +95,7 @@ class Repository {
 
     public async GetByID(id: string) {
         return this.schema.order.findByPk(id, {
-            include: this.schema.productOrder,
+            include: [this.schema.productOrder, this.schema.store],
         })
     }
 
@@ -150,7 +150,6 @@ class Repository {
             offset: request.offset,
             where,
             order,
-            include: this.schema.productOrder,
         })
 
         const count = await this.schema.order.count({

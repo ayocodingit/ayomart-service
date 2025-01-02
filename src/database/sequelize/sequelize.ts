@@ -58,6 +58,11 @@ class Sequalize {
             foreignKey: 'order_id',
         })
 
+        order.hasOne(store, {
+            sourceKey: 'store_id',
+            foreignKey: 'id',
+        })
+
         // setup relation for eager loader in here
         // example: User.hasOne(Profile)
         return {
