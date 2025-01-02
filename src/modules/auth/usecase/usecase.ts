@@ -186,6 +186,10 @@ class Usecase {
 
         return this.repository.UpdatePassword(notification.created_by, password)
     }
+
+    public async GetStoreByID(id: string) {
+        return this.repository.GetStoreByID(id)
+    }
 }
 
 export default Usecase

@@ -42,6 +42,12 @@ class Repository {
         )
     }
 
+    public async GetStoreByID(id: string) {
+        return this.schema.store.findByPk(id, {
+            attributes: ['id', 'name', 'tax', 'isTaxBorneCustomer']
+        })
+    }
+
     public async GetTransaction() {
         return this.schema.connection.transaction()
     }

@@ -80,12 +80,14 @@ class Handler {
 
     public Me = async (req: any, res: Response, next: NextFunction) => {
         try {
+            const store = await this.usecase.GetStoreByID(req.user.store.id)
             this.logger.Info(statusCode[statusCode.CREATED], {
                 additional_info: this.http.AdditionalInfo(req, statusCode.OK),
             })
             return res.status(statusCode.OK).json({
                 data: {
                     ...req.user,
+                    store
                 },
             })
         } catch (error) {
