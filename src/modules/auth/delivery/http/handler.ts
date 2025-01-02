@@ -87,7 +87,7 @@ class Handler {
             return res.status(statusCode.OK).json({
                 data: {
                     ...req.user,
-                    store
+                    store,
                 },
             })
         } catch (error) {

@@ -44,7 +44,7 @@ class Repository {
 
     public async GetStoreByID(id: string) {
         return this.schema.store.findByPk(id, {
-            attributes: ['id', 'name', 'tax', 'isTaxBorneCustomer']
+            attributes: ['id', 'name', 'tax', 'isTaxBorneCustomer'],
         })
     }
 
