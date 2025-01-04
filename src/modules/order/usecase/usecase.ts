@@ -51,19 +51,6 @@ class Usecase {
             )
         }
 
-        if (body.customer_id) {
-            const customer = await this.repository.GetCustomer(body.customer_id)
-
-            if (!customer) {
-                throw new error(
-                    statusCode.BAD_REQUEST,
-                    Translate('not_exists', {
-                        attribute: 'Konsumen',
-                    })
-                )
-            }
-        }
-
         const productOrder = await this.repository.getProductOrder(
             body.products,
             body.store_id,
@@ -85,13 +72,6 @@ class Usecase {
                 order.id,
                 t
             )
-
-            if (body.customer_id && order.dataValues.change < 0)
-                await this.repository.UpdateCustomerDebt(
-                    body.customer_id,
-                    order.dataValues.change,
-                    t
-                )
 
             await this.repository.UpdateStoreBalance(
                 body.store_id,

@@ -56,7 +56,8 @@ export const StoreSchema = Joi.object<Store>({
         then: Joi.required(),
         otherwise: Joi.forbidden(),
     }),
-    customer_id: Joi.string().optional(),
+    customer: Joi.string().optional().allow(''),
+    phone_number: Joi.string().optional().allow(''),
     products,
 })
 
@@ -76,4 +77,6 @@ export const ReceivedSchema = Joi.object<ReceivedOrder>({
     note: Joi.string().required().allow(''),
     proof_of_payment: Joi.array().items(file).optional().default([]),
     status: Joi.string().valid(status.RECEIVED, status.REJECTED).required(),
+    customer: Joi.string().optional().allow(''),
+    phone_number: Joi.string().optional().allow(''),
 })

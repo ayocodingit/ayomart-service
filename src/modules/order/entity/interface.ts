@@ -44,7 +44,8 @@ export type Store = {
     payment_method: string
     proof_of_payment: File[]
     store_id: string
-    customer_id: string
+    customer: string
+    phone_number: string
     received_by: string
     status: string
     products: StoreProduct[]
@@ -66,4 +67,6 @@ export type ReceivedOrder = {
     received_by: string
     pickup_time_at: Date
     store_id: string
+    customer: string
+    phone_number: string
 }

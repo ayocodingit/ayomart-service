@@ -68,8 +68,12 @@ module.exports = {
                     type: DataTypes.BOOLEAN,
                     allowNull: false,
                 },
-                customer_id: {
-                    type: DataTypes.UUID,
+                customer: {
+                    type: DataTypes.STRING,
+                    allowNull: true,
+                },
+                phone_number: {
+                    type: DataTypes.STRING,
                     allowNull: true,
                 },
                 status: {
@@ -96,7 +100,12 @@ module.exports = {
             })
             .then(() => {
                 return queryInterface
-                    .addIndex('orders', ['code', 'order_type', 'status'])
+                    .addIndex('orders', [
+                        'code',
+                        'order_type',
+                        'status',
+                        'customer',
+                    ])
                     .then(() => {
                         return queryInterface.addIndex('orders', [
                             'store_id',
