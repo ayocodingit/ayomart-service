@@ -11,7 +11,7 @@ import { Schema } from '../../../../database/sequelize/interface'
 import { RequestParams } from '../../../../helpers/requestParams'
 import { Order, Transaction } from 'sequelize'
 import { order_type, status } from '../../../../database/constant/order'
-import { endOfDay, format, startOfDay } from 'date-fns'
+import { endOfDay, startOfDay } from 'date-fns'
 import { isValidDate } from '../../../../helpers/date'
 import error from '../../../../pkg/error'
 import statusCode from '../../../../pkg/statusCode'
@@ -40,16 +40,6 @@ class Repository {
                 transaction: t,
             }
         )
-    }
-
-    public async UpdateCustomerDebt(id: string, debt: number, t: Transaction) {
-        return this.schema.customer.increment('debt', {
-            by: -debt,
-            where: {
-                id,
-            },
-            transaction: t,
-        })
     }
 
     public async UpdateStoreBalance(id: string, total: number, t: Transaction) {
